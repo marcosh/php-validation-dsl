@@ -1,0 +1,13 @@
+{
+    "name": "marcosh/php-validation-dsl",
+    "description": "A DSL for validating data in a functional fashion",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marco Perone",
+            "email": "pasafama@gmail.com"
+        }
+    ],
+    "require": {}
+}
