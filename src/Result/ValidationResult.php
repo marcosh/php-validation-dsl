@@ -93,13 +93,4 @@ final class ValidationResult
             }
         );
     }
-
-    public function sequence(self $that): self
-    {
-        if (! $this->isValid) {
-            return $this;
-        }
-
-        return $that;
-    }
 }

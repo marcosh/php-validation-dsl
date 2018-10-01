@@ -42,8 +42,15 @@ final class Sequence implements Validation
     {
         return array_reduce(
             $this->validations,
-            function (ValidationResult $carry, Validation $validation) use ($data) {
-                return $carry->sequence($validation->validate($data));
+            function (ValidationResult $carry, Validation $validation) {
+                return $carry->process(
+                    function ($validData) use ($validation) {
+                        return $validation->validate($validData);
+                    },
+                    function () use ($carry) {
+                        return $carry;
+                    }
+                );
             },
             ValidationResult::valid($data)
         );
