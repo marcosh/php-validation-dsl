@@ -9,7 +9,7 @@ use function preg_match;
 
 final class Regex
 {
-    private const MATCH_FAILED = 'regex.match-failed';
+    public const MATCH_FAILED = 'regex.match-failed';
 
     /**
      * @var string
