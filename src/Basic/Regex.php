@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Validation;
 use function preg_match;
 
-final class Regex
+final class Regex implements Validation
 {
     public const MATCH_FAILED = 'regex.match-failed';
 
