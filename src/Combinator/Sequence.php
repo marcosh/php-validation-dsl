@@ -33,7 +33,7 @@ final class Sequence implements Validation
      * @return self
      * @throws InvalidArgumentException
      */
-    public static function withValidations(array $validations): self
+    public static function validations(array $validations): self
     {
         return new self($validations);
     }
