@@ -41,11 +41,9 @@ final class All implements Validation
     {
         $result = ValidationResult::valid($data);
 
-        foreach ($this->validations as $key => $validation) {
+        foreach ($this->validations as $validation) {
             $result = $result->join(
-                $validation->validate($data)->mapError(function (array $messages) use ($key) {
-                    return [$key => $messages];
-                }),
+                $validation->validate($data),
                 function ($a, $b) {
                     return $a;
                 },
