@@ -18,6 +18,3 @@ describe('IsNull', function () {
         expect($isNull->validate(42))->toEqual(ValidationResult::errors([IsNull::NOT_NULL]));
     });
 });
-
-
-
