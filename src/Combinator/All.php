@@ -37,13 +37,13 @@ final class All implements Validation
         return new self($validations);
     }
 
-    public function validate($data): ValidationResult
+    public function validate($data, array $context = []): ValidationResult
     {
         $result = ValidationResult::valid($data);
 
         foreach ($this->validations as $validation) {
             $result = $result->join(
-                $validation->validate($data),
+                $validation->validate($data, $context),
                 function ($a, $b) {
                     return $a;
                 },

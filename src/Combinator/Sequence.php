@@ -38,14 +38,14 @@ final class Sequence implements Validation
         return new self($validations);
     }
 
-    public function validate($data): ValidationResult
+    public function validate($data, array $context = []): ValidationResult
     {
         return array_reduce(
             $this->validations,
-            function (ValidationResult $carry, Validation $validation) {
+            function (ValidationResult $carry, Validation $validation) use ($context) {
                 return $carry->process(
-                    function ($validData) use ($validation) {
-                        return $validation->validate($validData);
+                    function ($validData) use ($validation, $context) {
+                        return $validation->validate($validData, $context);
                     },
                     function () use ($carry) {
                         return $carry;

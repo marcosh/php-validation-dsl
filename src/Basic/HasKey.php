@@ -27,7 +27,7 @@ final class HasKey implements Validation
         return new self($key);
     }
 
-    public function validate($data): ValidationResult
+    public function validate($data, array $context = []): ValidationResult
     {
         if (! array_key_exists($this->key, $data)) {
             return ValidationResult::errors([self::MISSING_KEY]);

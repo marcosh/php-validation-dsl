@@ -8,5 +8,5 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
 interface Validation
 {
-    public function validate($data): ValidationResult;
+    public function validate($data, array $context = []): ValidationResult;
 }

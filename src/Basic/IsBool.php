@@ -12,7 +12,7 @@ final class IsBool implements Validation
 {
     public const NOT_A_BOOL = 'is-bool.not-a-bool';
 
-    public function validate($data): ValidationResult
+    public function validate($data, array $context = []): ValidationResult
     {
         if (! is_bool($data)) {
             return ValidationResult::errors([self::NOT_A_BOOL]);

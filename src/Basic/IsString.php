@@ -12,7 +12,7 @@ final class IsString implements Validation
 {
     public const NOT_A_STRING = 'is-string.not-a-string';
 
-    public function validate($data): ValidationResult
+    public function validate($data, array $context = []): ValidationResult
     {
         if (! is_string($data)) {
             return ValidationResult::errors([self::NOT_A_STRING]);

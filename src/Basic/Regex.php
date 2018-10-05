@@ -27,7 +27,7 @@ final class Regex implements Validation
         return new self($pattern);
     }
 
-    public function validate($data): ValidationResult
+    public function validate($data, array $context = []): ValidationResult
     {
         $match = preg_match($this->pattern, $data);
 
