@@ -50,6 +50,19 @@ final class ValidationResult
         return self::valid($joinValid($this->validContent, $that->validContent));
     }
 
+    public function meet(self $that, callable $joinErrors): self
+    {
+        if ($this->isValid) {
+            return $this;
+        }
+
+        if ($that->isValid) {
+            return $that;
+        }
+
+        return self::errors($joinErrors($this->messages, $that->messages));
+    }
+
     /**
      * @param callable $processValid : validContent -> mixed
      * @param callable $processErrors : messages -> mixed
