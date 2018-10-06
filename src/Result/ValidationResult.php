@@ -95,7 +95,7 @@ final class ValidationResult
         );
     }
 
-    public function mapError(callable $map): self
+    public function mapErrors(callable $map): self
     {
         return $this->process(
             function ($validContent) {

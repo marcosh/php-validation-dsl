@@ -44,7 +44,7 @@ final class Any implements Validation
             $result = $result->meet($validation->validate($data, $context), 'array_merge');
         }
 
-        $result = $result->mapError(function (array $messages) {
+        $result = $result->mapErrors(function (array $messages) {
             return [
                 self::NOT_EVEN_ONE => $messages
             ];
