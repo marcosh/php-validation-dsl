@@ -19,6 +19,7 @@
         }
     },
     "require-dev": {
-        "maglnet/composer-require-checker": "^1.1"
+        "maglnet/composer-require-checker": "^1.1",
+        "kahlan/kahlan": "^4.3"
     }
 }
