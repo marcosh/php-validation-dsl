@@ -40,7 +40,7 @@ final class Any implements Validation
     {
         $result = ValidationResult::errors([]);
 
-        foreach ($this->validations as $key => $validation) {
+        foreach ($this->validations as $validation) {
             $result = $result->meet($validation->validate($data, $context), 'array_merge');
         }
 
