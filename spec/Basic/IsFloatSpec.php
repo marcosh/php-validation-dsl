@@ -9,7 +9,7 @@ describe('IsFloat', function () {
     $isFloat = new IsFloat();
 
     it('returns a valid result if the argument is float', function () use ($isFloat) {
-        expect($isFloat->validate(12.34))->toEqual(ValidationResult::valid(true));
+        expect($isFloat->validate(12.34))->toEqual(ValidationResult::valid(12.34));
     });
 
     it('returns an error result if the argument is not a float', function () use ($isFloat) {
