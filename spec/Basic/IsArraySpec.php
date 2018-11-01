@@ -17,4 +17,12 @@ describe('IsArray', function () {
     it('returns an error result if the argument is not a boolean', function () use ($isArray) {
         expect($isArray->validate(42))->toEqual(ValidationResult::errors([IsArray::NOT_AN_ARRAY]));
     });
+
+    it('returns a custom error result if the key is not a boolean and a custom formatter is passed', function () {
+        $isArray = IsArray::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isArray->validate(42))->toEqual(ValidationResult::errors(['42']));
+    });
 });

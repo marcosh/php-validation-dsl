@@ -17,4 +17,12 @@ describe('IsBool', function () {
     it('returns an error result if the argument is not a boolean', function () use ($isBool) {
         expect($isBool->validate('true'))->toEqual(ValidationResult::errors([IsBool::NOT_A_BOOL]));
     });
+
+    it('returns an error result if the argument is not a boolean and a custom formatter is passed', function () {
+        $isBool = IsBool::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isBool->validate('true'))->toEqual(ValidationResult::errors(['true']));
+    });
 });

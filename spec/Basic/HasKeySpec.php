@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\HasKey;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use function json_encode;
 
 describe('HasKey', function () {
     $hasKey = HasKey::withKey('key');
@@ -20,5 +21,15 @@ describe('HasKey', function () {
         $data = [];
 
         expect($hasKey->validate($data))->toEqual(ValidationResult::errors([HasKey::MISSING_KEY]));
+    });
+
+    it('returns a custom error result if the key is not present and a custom formatter is passed', function () {
+        $hasKey = HasKey::withKeyAndFormatter('key', function ($key, $data) {
+            return [$key . json_encode($data)];
+        });
+
+        $data = [];
+
+        expect($hasKey->validate($data))->toEqual(ValidationResult::errors(['key' . json_encode([])]));
     });
 });

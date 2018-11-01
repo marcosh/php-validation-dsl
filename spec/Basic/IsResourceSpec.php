@@ -20,4 +20,12 @@ describe('IsResource', function () {
     it('returns an error result if the argument is not a resource', function () use ($isResource) {
         expect($isResource->validate('gigi'))->toEqual(ValidationResult::errors([IsResource::NOT_A_RESOURCE]));
     });
+
+    it('returns a custom error result if the argument is not a resource and custom formatter is passed', function () {
+        $isResource = IsResource::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isResource->validate('gigi'))->toEqual(ValidationResult::errors(['gigi']));
+    });
 });

@@ -17,4 +17,12 @@ describe('IsNull', function () {
     it('returns an error result if the argument is not null', function () use ($isNull) {
         expect($isNull->validate(42))->toEqual(ValidationResult::errors([IsNull::NOT_NULL]));
     });
+
+    it('returns a custom error result if the argument is null and a custom formatter is passed', function () {
+        $isNull = IsNull::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isNull->validate(42))->toEqual(ValidationResult::errors(['42']));
+    });
 });

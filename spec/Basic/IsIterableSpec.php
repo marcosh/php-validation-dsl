@@ -21,4 +21,12 @@ describe('IsIterable', function () {
     it('returns an error result if the argument is not an iterable', function () use ($isIterable) {
         expect($isIterable->validate('gigi'))->toEqual(ValidationResult::errors([IsIterable::NOT_AN_ITERABLE]));
     });
+
+    it('returns a custom error result if the argument is not iterable and a custom formatter is passed', function () {
+        $isIterable = IsIterable::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isIterable->validate('gigi'))->toEqual(ValidationResult::errors(['gigi']));
+    });
 });

@@ -17,4 +17,12 @@ describe('IsObject', function () {
     it('returns an error result if the argument is not an object', function () use ($isObject) {
         expect($isObject->validate(true))->toEqual(ValidationResult::errors([IsObject::NOT_AN_OBJECT]));
     });
+
+    it('returns a custom error result if the argument is not an object and a custom formatter is passed', function () {
+        $isObject = IsObject::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isObject->validate(true))->toEqual(ValidationResult::errors(['1']));
+    });
 });

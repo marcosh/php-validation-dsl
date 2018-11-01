@@ -38,7 +38,15 @@ describe('IsCallable', function () {
         expect($isCallable->validate($instanceMethod))->toEqual(ValidationResult::valid($instanceMethod));
     });
 
-    it('returns an error result if the argument is not a boolean', function () use ($isCallable) {
+    it('returns an error result if the argument is not a callable', function () use ($isCallable) {
         expect($isCallable->validate('true'))->toEqual(ValidationResult::errors([IsCallable::NOT_A_CALLABLE]));
+    });
+
+    it('returns a custom error if the argument is not a callable and a custom formatter is passed', function () {
+        $isCallable = IsCallable::withFormatter(function ($data) {
+            return [(string) $data];
+        });
+
+        expect($isCallable->validate('true'))->toEqual(ValidationResult::errors(['true']));
     });
 });
