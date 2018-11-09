@@ -106,4 +106,10 @@ final class ValidationResult
             }
         );
     }
+
+    public function equals(self $that): bool
+    {
+        return ($this->isValid && $that->isValid && $this->validContent === $that->validContent) ||
+            (!$this->isValid && !$that->isValid && $this->messages === $that->messages);
+    }
 }

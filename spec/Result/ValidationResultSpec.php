@@ -148,4 +148,32 @@ describe('Validation result', function () {
 
         expect($result->mapErrors($arrayUp))->toEqual(ValidationResult::errors(['GIGI']));
     });
+
+    it('is equal to another result with the same valid content', function () {
+        $result1 = ValidationResult::valid(42);
+        $result2 = ValidationResult::valid(42);
+
+        expect($result1->equals($result2))->toBeTruthy();
+    });
+
+    it('is equal to another invalid result with the same error message', function () {
+        $result1 = ValidationResult::errors(['gigi']);
+        $result2 = ValidationResult::errors(['gigi']);
+
+        expect($result1->equals($result2))->toBeTruthy();
+    });
+
+    it('is not equal to an invalid result if valid', function () {
+        $result1 = ValidationResult::valid(42);
+        $result2 = ValidationResult::errors(['gigi']);
+
+        expect($result1->equals($result2))->toBeFalsy();
+    });
+
+    it('is not equal to a valid result if invalid', function () {
+        $result1 = ValidationResult::errors(['gigi']);
+        $result2 = ValidationResult::valid(42);
+
+        expect($result1->equals($result2))->toBeFalsy();
+    });
 });
