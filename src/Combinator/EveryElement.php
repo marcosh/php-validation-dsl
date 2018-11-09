@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSL\Combinator;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
+use function is_callable;
 
 final class EveryElement implements Validation
 {
@@ -14,14 +15,31 @@ final class EveryElement implements Validation
      */
     private $elementValidation;
 
-    private function __construct(Validation $validation)
+    /**
+     * @var callable : $key -> $resultMessages -> $validationMessages -> array
+     */
+    private $errorFormatter;
+
+    private function __construct(Validation $validation, ?callable $errorFormatter = null)
     {
         $this->elementValidation = $validation;
+        $this->errorFormatter = is_callable($errorFormatter) ?
+            $errorFormatter :
+            function ($key, $resultMessages, $validationMessages) {
+                $resultMessages[$key] = $validationMessages;
+
+                return $resultMessages;
+            };
     }
 
     public static function validation(Validation $validation)
     {
         return new self($validation);
+    }
+
+    public static function validationWithFormatter(Validation $validation, callable  $errorFormatter)
+    {
+        return new self($validation, $errorFormatter);
     }
 
     /**
@@ -31,6 +49,8 @@ final class EveryElement implements Validation
      */
     public function validate($data, array $context = []): ValidationResult
     {
+        $errorFormatter = $this->errorFormatter;
+
         $result = ValidationResult::valid($data);
 
         foreach ($data as $key => $element) {
@@ -39,10 +59,8 @@ final class EveryElement implements Validation
                 function ($a, $b) {
                     return $a;
                 },
-                function ($resultMessages, $validationMessages) use ($key) {
-                    $resultMessages[$key] = $validationMessages;
-
-                    return $resultMessages;
+                function ($resultMessages, $validationMessages) use ($key, $errorFormatter) {
+                    return $errorFormatter($key, $resultMessages, $validationMessages);
                 }
             );
         }

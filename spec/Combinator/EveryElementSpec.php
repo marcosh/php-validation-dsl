@@ -28,4 +28,23 @@ describe('EveryElement', function () {
             1 => [IsString::NOT_A_STRING]
         ]));
     });
+
+    it(
+        'returns a custom error result if one element fails the validation and a custom formatter is passed',
+        function () {
+            $everyElement = EveryElement::validationWithFormatter(
+                new IsString(),
+                function ($key, $resultMessages, $validationMessages) {
+                    $resultMessages[] = $key . $validationMessages[0];
+
+                    return $resultMessages;
+                }
+            );
+
+            expect($everyElement->validate([true, 42]))->toEqual(ValidationResult::errors([
+                0 . IsString::NOT_A_STRING,
+                1 . IsString::NOT_A_STRING
+            ]));
+        }
+    );
 });

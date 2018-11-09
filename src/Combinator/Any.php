@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSL\Combinator;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 use Webmozart\Assert\Assert;
+use function is_callable;
 
 final class Any implements Validation
 {
@@ -18,13 +19,26 @@ final class Any implements Validation
     private $validations;
 
     /**
-     * @param Validation[] $validations
+     * @var callable $messages -> array
      */
-    public function __construct(array $validations)
+    private $errorFormatter;
+
+    /**
+     * @param Validation[] $validations
+     * @param callable|null $errorFormatter
+     */
+    public function __construct(array $validations, ?callable $errorFormatter = null)
     {
         Assert::allIsInstanceOf($validations, Validation::class);
 
         $this->validations = $validations;
+        $this->errorFormatter = is_callable($errorFormatter) ?
+            $errorFormatter :
+            function (array $messages) {
+                return [
+                    self::NOT_EVEN_ONE => $messages
+                ];
+            };
     }
 
     /**
@@ -36,6 +50,16 @@ final class Any implements Validation
         return new self($validations);
     }
 
+    /**
+     * @param Validation[] $validations
+     * @param callable $errorFormatter
+     * @return self
+     */
+    public static function validationsWithFormatter(array $validations, callable $errorFormatter): self
+    {
+        return new self($validations, $errorFormatter);
+    }
+
     public function validate($data, array $context = []): ValidationResult
     {
         $result = ValidationResult::errors([]);
@@ -44,11 +68,7 @@ final class Any implements Validation
             $result = $result->meet($validation->validate($data, $context), 'array_merge');
         }
 
-        $result = $result->mapErrors(function (array $messages) {
-            return [
-                self::NOT_EVEN_ONE => $messages
-            ];
-        });
+        $result = $result->mapErrors($this->errorFormatter);
         return $result;
     }
 }

@@ -38,4 +38,21 @@ describe('Any', function () {
             ]
         ]));
     });
+
+    it(
+        'returns a custom error result if every validator fails with the errors combined by the error formatter',
+        function () {
+            $any = Any::validationsWithFormatter([
+                new IsString(),
+                new IsBool()
+            ], function (array $messages) {
+                return $messages;
+            });
+
+            expect($any->validate(42))->toEqual(ValidationResult::errors([
+                IsString::NOT_A_STRING,
+                IsBool::NOT_A_BOOL
+            ]));
+        }
+    );
 });

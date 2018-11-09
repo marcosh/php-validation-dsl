@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 use Webmozart\Assert\Assert;
+use function is_callable;
 
 final class All implements Validation
 {
@@ -17,14 +18,23 @@ final class All implements Validation
     private $validations;
 
     /**
+     * @var callable ...array -> array
+     */
+    private $errorFormatter;
+
+    /**
      * @param Validation[] $validations
+     * @param callable|null $errorFormatter
      * @throws InvalidArgumentException
      */
-    public function __construct(array $validations)
+    public function __construct(array $validations, ?callable $errorFormatter = null)
     {
         Assert::allIsInstanceOf($validations, Validation::class);
 
         $this->validations = $validations;
+        $this->errorFormatter = is_callable($errorFormatter) ?
+            $errorFormatter :
+            'array_merge';
     }
 
     /**
@@ -37,6 +47,17 @@ final class All implements Validation
         return new self($validations);
     }
 
+    /**
+     * @param Validation[] $validations
+     * @param callable $errorFormatter
+     * @return self
+     * @throws InvalidArgumentException
+     */
+    public static function validationsWithFormatter(array $validations, callable $errorFormatter)
+    {
+        return new self($validations, $errorFormatter);
+    }
+
     public function validate($data, array $context = []): ValidationResult
     {
         $result = ValidationResult::valid($data);
@@ -47,7 +68,7 @@ final class All implements Validation
                 function ($a, $b) {
                     return $a;
                 },
-                'array_merge'
+                $this->errorFormatter
             );
         }
 

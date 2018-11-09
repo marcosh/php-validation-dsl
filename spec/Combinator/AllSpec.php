@@ -9,6 +9,7 @@ use Marcosh\PhpValidationDSL\Basic\IsString;
 use Marcosh\PhpValidationDSL\Basic\Regex;
 use Marcosh\PhpValidationDSL\Combinator\All;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use function json_encode;
 
 describe('All', function () {
     it('returns a valid result in every case if it does not contain any validator', function () {
@@ -36,5 +37,16 @@ describe('All', function () {
             IsString::NOT_A_STRING,
             IsBool::NOT_A_BOOL
         ]));
+    });
+
+    it('returns a custom error result if one validator fails using the custom error formatter', function () {
+        $all = All::validationsWithFormatter([
+            new IsString(),
+            new IsBool()
+        ], function (...$errors) {
+            return [json_encode($errors)];
+        });
+
+        expect($all->validate(42))->toEqual(ValidationResult::errors(['[["[[],[\"is-string.not-a-string\"]]"],["is-bool.not-a-bool"]]']));
     });
 });
