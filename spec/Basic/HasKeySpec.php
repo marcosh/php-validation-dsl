@@ -14,13 +14,13 @@ describe('HasKey', function () {
     it('returns a valid result if the key is present', function () use ($hasKey) {
         $data = ['key' => null];
 
-        expect($hasKey->validate($data))->toEqual(ValidationResult::valid($data));
+        expect($hasKey->validate($data)->equals(ValidationResult::valid($data)))->toBeTruthy();
     });
 
     it('returns an error result if the key is not present', function () use ($hasKey) {
         $data = [];
 
-        expect($hasKey->validate($data))->toEqual(ValidationResult::errors([HasKey::MISSING_KEY]));
+        expect($hasKey->validate($data)->equals(ValidationResult::errors([HasKey::MISSING_KEY])))->toBeTruthy();
     });
 
     it('returns a custom error result if the key is not present and a custom formatter is passed', function () {
@@ -30,6 +30,6 @@ describe('HasKey', function () {
 
         $data = [];
 
-        expect($hasKey->validate($data))->toEqual(ValidationResult::errors(['key' . json_encode([])]));
+        expect($hasKey->validate($data)->equals(ValidationResult::errors(['key' . json_encode([])])))->toBeTruthy();
     });
 });

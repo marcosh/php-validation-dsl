@@ -13,7 +13,7 @@ describe('Any', function () {
     it('returns a error result in every case if it does not contain any validator', function () {
         $any = Any::validations([]);
 
-        expect($any->validate('gigi'))->toEqual(ValidationResult::errors([Any::NOT_EVEN_ONE => []]));
+        expect($any->validate('gigi')->equals(ValidationResult::errors([Any::NOT_EVEN_ONE => []])))->toBeTruthy();
     });
 
     it('returns a valid result if one validator succeeds', function () {
@@ -22,7 +22,7 @@ describe('Any', function () {
             new IsBool()
         ]);
 
-        expect($any->validate(true))->toEqual(ValidationResult::valid(true));
+        expect($any->validate(true)->equals(ValidationResult::valid(true)))->toBeTruthy();
     });
 
     it('returns an error result if every validator fails with all the errors combined', function () {
@@ -31,12 +31,12 @@ describe('Any', function () {
             new IsBool()
         ]);
 
-        expect($any->validate(42))->toEqual(ValidationResult::errors([
+        expect($any->validate(42)->equals(ValidationResult::errors([
             Any::NOT_EVEN_ONE => [
                 IsString::NOT_A_STRING,
                 IsBool::NOT_A_BOOL
             ]
-        ]));
+        ])))->toBeTruthy();
     });
 
     it(
@@ -49,10 +49,10 @@ describe('Any', function () {
                 return $messages;
             });
 
-            expect($any->validate(42))->toEqual(ValidationResult::errors([
+            expect($any->validate(42)->equals(ValidationResult::errors([
                 IsString::NOT_A_STRING,
                 IsBool::NOT_A_BOOL
-            ]));
+            ])))->toBeTruthy();
         }
     );
 });

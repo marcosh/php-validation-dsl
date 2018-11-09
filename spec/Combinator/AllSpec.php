@@ -15,7 +15,7 @@ describe('All', function () {
     it('returns a valid result in every case if it does not contain any validator', function () {
         $all = All::validations([]);
 
-        expect($all->validate('gigi'))->toEqual(ValidationResult::valid('gigi'));
+        expect($all->validate('gigi')->equals(ValidationResult::valid('gigi')))->toBeTruthy();
     });
 
     it('returns a valid result if every validator succeeds', function () {
@@ -24,7 +24,7 @@ describe('All', function () {
             Regex::withPattern('/^[\p{L} ]*$/u')
         ]);
 
-        expect($all->validate('gigi'))->toEqual(ValidationResult::valid('gigi'));
+        expect($all->validate('gigi')->equals(ValidationResult::valid('gigi')))->toBeTruthy();
     });
 
     it('returns an error result if one validator fails with all the errors combined', function () {
@@ -33,10 +33,10 @@ describe('All', function () {
             new IsBool()
         ]);
 
-        expect($all->validate(42))->toEqual(ValidationResult::errors([
+        expect($all->validate(42)->equals(ValidationResult::errors([
             IsString::NOT_A_STRING,
             IsBool::NOT_A_BOOL
-        ]));
+        ])))->toBeTruthy();
     });
 
     it('returns a custom error result if one validator fails using the custom error formatter', function () {
@@ -47,6 +47,8 @@ describe('All', function () {
             return [json_encode($errors)];
         });
 
-        expect($all->validate(42))->toEqual(ValidationResult::errors(['[["[[],[\"is-string.not-a-string\"]]"],["is-bool.not-a-bool"]]']));
+        expect(
+            $all->validate(42)->equals(ValidationResult::errors(['[["[[],[\"is-string.not-a-string\"]]"],["is-bool.not-a-bool"]]']))
+        )->toBeTruthy();
     });
 });

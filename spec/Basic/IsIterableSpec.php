@@ -11,15 +11,18 @@ describe('IsIterable', function () {
     $isIterable = new IsIterable();
 
     it('returns a valid result if the argument is an array', function () use ($isIterable) {
-        expect($isIterable->validate([]))->toEqual(ValidationResult::valid([]));
+        expect($isIterable->validate([])->equals(ValidationResult::valid([])))->toBeTruthy();
     });
 
     it('returns a valid result if the argument is a Traversable', function () use ($isIterable) {
-        expect($isIterable->validate(new \ArrayIterator()))->toEqual(ValidationResult::valid(new \ArrayIterator()));
+        $iterator = new \ArrayIterator();
+
+        expect($isIterable->validate($iterator)->equals(ValidationResult::valid($iterator)))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not an iterable', function () use ($isIterable) {
-        expect($isIterable->validate('gigi'))->toEqual(ValidationResult::errors([IsIterable::NOT_AN_ITERABLE]));
+        expect($isIterable->validate('gigi')->equals(ValidationResult::errors([IsIterable::NOT_AN_ITERABLE])))
+            ->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not iterable and a custom formatter is passed', function () {
@@ -27,6 +30,6 @@ describe('IsIterable', function () {
             return [(string) $data];
         });
 
-        expect($isIterable->validate('gigi'))->toEqual(ValidationResult::errors(['gigi']));
+        expect($isIterable->validate('gigi')->equals(ValidationResult::errors(['gigi'])))->toBeTruthy();
     });
 });

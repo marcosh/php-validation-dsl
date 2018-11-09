@@ -11,11 +11,11 @@ describe('IsBool', function () {
     $isBool = new IsBool();
 
     it('returns a valid result if the argument is boolean', function () use ($isBool) {
-        expect($isBool->validate(true))->toEqual(ValidationResult::valid(true));
+        expect($isBool->validate(true)->equals(ValidationResult::valid(true)))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not a boolean', function () use ($isBool) {
-        expect($isBool->validate('true'))->toEqual(ValidationResult::errors([IsBool::NOT_A_BOOL]));
+        expect($isBool->validate('true')->equals(ValidationResult::errors([IsBool::NOT_A_BOOL])))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not a boolean and a custom formatter is passed', function () {
@@ -23,6 +23,6 @@ describe('IsBool', function () {
             return [(string) $data];
         });
 
-        expect($isBool->validate('true'))->toEqual(ValidationResult::errors(['true']));
+        expect($isBool->validate('true')->equals(ValidationResult::errors(['true'])))->toBeTruthy();
     });
 });

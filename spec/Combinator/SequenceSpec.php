@@ -14,7 +14,7 @@ describe('Sequence', function () {
     it('returns a valid result in every case if it does not contain any validator', function () {
         $sequence = Sequence::validations([]);
 
-        expect($sequence->validate('gigi'))->toEqual(ValidationResult::valid('gigi'));
+        expect($sequence->validate('gigi')->equals(ValidationResult::valid('gigi')))->toBeTruthy();
     });
 
     it('returns a valid result if every validator succeeds', function () {
@@ -23,7 +23,7 @@ describe('Sequence', function () {
             Regex::withPattern('/^[\p{L} ]*$/u')
         ]);
 
-        expect($sequence->validate('gigi'))->toEqual(ValidationResult::valid('gigi'));
+        expect($sequence->validate('gigi')->equals(ValidationResult::valid('gigi')))->toBeTruthy();
     });
 
     it('returns an error result if one validator fails with just the first error', function () {
@@ -32,8 +32,8 @@ describe('Sequence', function () {
             new IsBool()
         ]);
 
-        expect($sequence->validate(42))->toEqual(ValidationResult::errors([
+        expect($sequence->validate(42)->equals(ValidationResult::errors([
             IsString::NOT_A_STRING
-        ]));
+        ])))->toBeTruthy();
     });
 });

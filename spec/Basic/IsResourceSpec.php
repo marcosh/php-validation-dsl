@@ -14,11 +14,12 @@ describe('IsResource', function () {
     it('returns a valid result if the argument is a resource', function () use ($isResource) {
         $resource = fopen(__FILE__, 'rb');
 
-        expect($isResource->validate($resource))->toEqual(ValidationResult::valid($resource));
+        expect($isResource->validate($resource)->equals(ValidationResult::valid($resource)))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not a resource', function () use ($isResource) {
-        expect($isResource->validate('gigi'))->toEqual(ValidationResult::errors([IsResource::NOT_A_RESOURCE]));
+        expect($isResource->validate('gigi')->equals(ValidationResult::errors([IsResource::NOT_A_RESOURCE])))
+            ->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not a resource and custom formatter is passed', function () {
@@ -26,6 +27,6 @@ describe('IsResource', function () {
             return [(string) $data];
         });
 
-        expect($isResource->validate('gigi'))->toEqual(ValidationResult::errors(['gigi']));
+        expect($isResource->validate('gigi')->equals(ValidationResult::errors(['gigi'])))->toBeTruthy();
     });
 });

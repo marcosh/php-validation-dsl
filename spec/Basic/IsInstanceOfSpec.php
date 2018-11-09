@@ -14,12 +14,15 @@ describe('IsInstanceOf', function () {
     $isInstanceOf = IsInstanceOf::withClassName(InstanceFoo::class);
 
     it('returns a valid result if the argument is an instance of the given class', function () use ($isInstanceOf) {
-        expect($isInstanceOf->validate(new InstanceFoo()))->toEqual(ValidationResult::valid(new InstanceFoo()));
+        $instance = new InstanceFoo();
+
+        expect($isInstanceOf->validate($instance)->equals(ValidationResult::valid($instance)))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not a string', function () use ($isInstanceOf) {
-        expect($isInstanceOf->validate(new \stdClass()))
-            ->toEqual(ValidationResult::errors([IsInstanceOf::NOT_AN_INSTANCE]));
+        expect(
+            $isInstanceOf->validate(new \stdClass())->equals(ValidationResult::errors([IsInstanceOf::NOT_AN_INSTANCE]))
+        )->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not a string and a custom formatter is passed', function () {
@@ -30,7 +33,7 @@ describe('IsInstanceOf', function () {
             }
         );
 
-        expect($isInstanceOf->validate(new \stdClass()))
-            ->toEqual(ValidationResult::errors([InstanceFoo::class . '{}']));
+        expect($isInstanceOf->validate(new \stdClass())->equals(ValidationResult::errors([InstanceFoo::class . '{}'])))
+            ->toBeTruthy();
     });
 });

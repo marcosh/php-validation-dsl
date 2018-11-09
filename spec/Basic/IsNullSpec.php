@@ -11,11 +11,11 @@ describe('IsNull', function () {
     $isNull = new IsNull();
 
     it('returns a valid result if the argument is null', function () use ($isNull) {
-        expect($isNull->validate(null))->toEqual(ValidationResult::valid(null));
+        expect($isNull->validate(null)->equals(ValidationResult::valid(null)))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not null', function () use ($isNull) {
-        expect($isNull->validate(42))->toEqual(ValidationResult::errors([IsNull::NOT_NULL]));
+        expect($isNull->validate(42)->equals(ValidationResult::errors([IsNull::NOT_NULL])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is null and a custom formatter is passed', function () {
@@ -23,6 +23,6 @@ describe('IsNull', function () {
             return [(string) $data];
         });
 
-        expect($isNull->validate(42))->toEqual(ValidationResult::errors(['42']));
+        expect($isNull->validate(42)->equals(ValidationResult::errors(['42'])))->toBeTruthy();
     });
 });

@@ -12,22 +12,22 @@ describe('EveryElement', function () {
     it('returns an error result in every case if the array is empty', function () {
         $anyElement = AnyElement::validation(new IsString());
 
-        expect($anyElement->validate([]))->toEqual(ValidationResult::errors([]));
+        expect($anyElement->validate([])->equals(ValidationResult::errors([])))->toBeTruthy();
     });
 
     it('returns a valid result if the validation on one element succeeds', function () {
         $anyElement = AnyElement::validation(new IsString());
 
-        expect($anyElement->validate([42, 'bepi']))->toEqual(ValidationResult::valid([42, 'bepi']));
+        expect($anyElement->validate([42, 'bepi'])->equals(ValidationResult::valid([42, 'bepi'])))->toBeTruthy();
     });
 
     it('returns an error result if every element fails the validation', function () {
         $anyElement = AnyElement::validation(new IsString());
 
-        expect($anyElement->validate([true, 42]))->toEqual(ValidationResult::errors([
+        expect($anyElement->validate([true, 42])->equals(ValidationResult::errors([
             0 => [IsString::NOT_A_STRING],
             1 => [IsString::NOT_A_STRING]
-        ]));
+        ])))->toBeTruthy();
     });
 
     it(
@@ -42,10 +42,10 @@ describe('EveryElement', function () {
                 }
             );
 
-            expect($anyElement->validate([true, 42]))->toEqual(ValidationResult::errors([
+            expect($anyElement->validate([true, 42])->equals(ValidationResult::errors([
                 0 . IsString::NOT_A_STRING,
                 1 . IsString::NOT_A_STRING
-            ]));
+            ])))->toBeTruthy();
         }
     );
 });
