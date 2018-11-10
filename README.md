@@ -1,5 +1,9 @@
 # php-validation-dsl
 
+[![Build Status](https://travis-ci.com/marcosh/php-validation-dsl.svg?branch=master)](https://travis-ci.org/marcosh/php-validation-dsl)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcosh/php-validation-dsl/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcosh/php-validation-dsl/?branch=master)
+[![Code Climate](https://codeclimate.com/github/marcosh/php-validation-dsl/badges/gpa.svg)](https://codeclimate.com/github/marcosh/php-validation-dsl)
+
 A DSL for validating data in a functional fashion
 
 ## Basic idea
