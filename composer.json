@@ -19,7 +19,7 @@
         }
     },
     "require-dev": {
-        "ext-json": "^1.6",
+        "ext-json": "^1.5",
         "maglnet/composer-require-checker": "^1.1",
         "kahlan/kahlan": "^4.3"
     }
