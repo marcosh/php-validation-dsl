@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Combinator;
 
-use Marcosh\PhpValidationDSL\Validation;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Validation;
 
 final class Focus implements Validation
 {

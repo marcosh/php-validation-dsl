@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Basic;
 
-use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
-use function is_int;
 
 final class IsInteger extends ComposingAssertion implements Validation
 {
