@@ -19,8 +19,8 @@ interface Validation
 
 where some `$data` comes in and a `ValidationResult` comes out.
 
-A `Validation` is a sum type which could be either valid, containing some valid
-`$data`, or invalid, containing some error messages.
+A `ValidationResult` is a sum type which could be either valid, containing some
+valid `$data`, or invalid, containing some error messages.
 
 ### Immutability
 
