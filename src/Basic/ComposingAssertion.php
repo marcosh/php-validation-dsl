@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 
 abstract class ComposingAssertion
 {
@@ -23,5 +24,12 @@ abstract class ComposingAssertion
     public function validate($data, array $context = []): ValidationResult
     {
         return $this->isAsAsserted->validate($data, $context);
+    }
+
+    protected static function withTranslatorAndMessage(Translator $translator, string $message)
+    {
+        return new static(function ($data) use ($translator, $message) {
+            return [$translator->translate($message)];
+        });
     }
 }

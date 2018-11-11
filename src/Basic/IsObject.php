@@ -26,8 +26,6 @@ final class IsObject extends ComposingAssertion implements Validation
 
     public static function withTranslator(Translator $translator): self
     {
-        return new self(function ($data) use ($translator) {
-            return [$translator->translate(self::NOT_AN_OBJECT)];
-        });
+        return self::withTranslatorAndMessage($translator, self::NOT_AN_OBJECT);
     }
 }

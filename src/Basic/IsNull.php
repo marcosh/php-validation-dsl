@@ -28,8 +28,6 @@ final class IsNull extends ComposingAssertion implements Validation
 
     public static function withTranslator(Translator $translator): self
     {
-        return new self(function ($data) use ($translator) {
-            return [$translator->translate(self::NOT_NULL)];
-        });
+        return self::withTranslatorAndMessage($translator, self::NOT_NULL);
     }
 }

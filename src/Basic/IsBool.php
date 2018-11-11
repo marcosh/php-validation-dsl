@@ -26,8 +26,6 @@ final class IsBool extends ComposingAssertion implements Validation
 
     public static function withTranslator(Translator $translator): self
     {
-        return new self(function ($data) use ($translator) {
-            return [$translator->translate(self::NOT_A_BOOL)];
-        });
+        return self::withTranslatorAndMessage($translator, self::NOT_A_BOOL);
     }
 }
