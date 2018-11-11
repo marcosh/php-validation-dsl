@@ -9,35 +9,19 @@ use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 use function is_resource;
 
-final class IsResource implements Validation
+final class IsResource extends ComposingAssertion implements Validation
 {
     public const NOT_A_RESOURCE = 'is-resource.not-a-resource';
 
-    /**
-     * @var callable $data -> string[]
-     */
-    private $errorFormatter;
-
     public function __construct(?callable $errorFormatter = null)
     {
-        $this->errorFormatter = is_callable($errorFormatter) ?
-            $errorFormatter :
-            function ($data) {
-                return [self::NOT_A_RESOURCE];
-            };
-    }
-
-    public static function withFormatter(callable $errorFormatter): self
-    {
-        return new self($errorFormatter);
-    }
-
-    public function validate($data, array $context = []): ValidationResult
-    {
-        if (! is_resource($data)) {
-            return ValidationResult::errors(($this->errorFormatter)($data));
-        }
-
-        return ValidationResult::valid($data);
+        $this->isAsAsserted = IsAsAsserted::withAssertionAndErrorFormatter(
+            'is_resource',
+            is_callable($errorFormatter) ?
+                $errorFormatter :
+                function ($data) {
+                    return [self::NOT_A_RESOURCE];
+                }
+        );
     }
 }
