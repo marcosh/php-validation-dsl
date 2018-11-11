@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 use Marcosh\PhpValidationDSL\Basic\IsResource;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use function fopen;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsResource', function () {
     $isResource = new IsResource();
@@ -28,5 +29,13 @@ describe('IsResource', function () {
         });
 
         expect($isResource->validate('gigi')->equals(ValidationResult::errors(['gigi'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not a resource and translator is passed', function () {
+        $isResource = IsResource::withTranslator(KeyValueTranslator::withDictionary([
+            IsResource::NOT_A_RESOURCE => 'NO RESOURCE HERE!'
+        ]));
+
+        expect($isResource->validate('gigi')->equals(ValidationResult::errors(['NO RESOURCE HERE!'])))->toBeTruthy();
     });
 });

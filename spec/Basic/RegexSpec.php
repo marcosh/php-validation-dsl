@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\Regex;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('Regex', function () {
     $regex = Regex::withPattern('/^[\p{L} ]*$/u');
@@ -25,5 +26,16 @@ describe('Regex', function () {
 
         expect($regex->validate('gigi@zucon')->equals(ValidationResult::errors(['/^[\p{L} ]*$/u' . 'gigi@zucon'])))
             ->toBeTruthy();
+    });
+
+    it('returns a translated error result if the pattern does not match and a translator is passed', function () {
+        $regex = Regex::withPatternAndTranslator(
+            '/^[\p{L} ]*$/u',
+            KeyValueTranslator::withDictionary([
+                Regex::MATCH_FAILED => 'NO MATCH HERE!'
+            ])
+        );
+
+        expect($regex->validate('gigi@zucon')->equals(ValidationResult::errors(['NO MATCH HERE!'])))->toBeTruthy();
     });
 });

@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsInteger;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsInteger', function () {
     $isInteger = new IsInteger();
@@ -25,5 +26,13 @@ describe('IsInteger', function () {
         });
 
         expect($isInteger->validate('gigi')->equals(ValidationResult::errors(['gigi'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not an int and a translator is passed', function () {
+        $isInteger = IsInteger::withTranslator(KeyValueTranslator::withDictionary([
+            IsInteger::NOT_AN_INTEGER => 'NO INTEGER HERE!'
+        ]));
+
+        expect($isInteger->validate('gigi')->equals(ValidationResult::errors(['NO INTEGER HERE!'])))->toBeTruthy();
     });
 });

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Combinator;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use Webmozart\Assert\Assert;
 use function is_callable;
@@ -58,6 +59,18 @@ final class Any implements Validation
     public static function validationsWithFormatter(array $validations, callable $errorFormatter): self
     {
         return new self($validations, $errorFormatter);
+    }
+
+    public static function validationsWithTranslator(array $validations, Translator $translator): self
+    {
+        return new self(
+            $validations,
+            function (array $messages) use ($translator) {
+                return [
+                    $translator->translate(self::NOT_EVEN_ONE) => $messages
+                ];
+            }
+        );
     }
 
     public function validate($data, array $context = []): ValidationResult

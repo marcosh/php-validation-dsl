@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsNull;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsNull', function () {
     $isNull = new IsNull();
@@ -24,5 +25,13 @@ describe('IsNull', function () {
         });
 
         expect($isNull->validate(42)->equals(ValidationResult::errors(['42'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is null and a translator is passed', function () {
+        $isNull = IsNull::withTranslator(KeyValueTranslator::withDictionary([
+            IsNull::NOT_NULL => 'NO NULL HERE!'
+        ]));
+
+        expect($isNull->validate(42)->equals(ValidationResult::errors(['NO NULL HERE!'])))->toBeTruthy();
     });
 });

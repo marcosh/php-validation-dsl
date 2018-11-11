@@ -8,6 +8,7 @@ use Marcosh\PhpValidationDSL\Basic\IsBool;
 use Marcosh\PhpValidationDSL\Basic\IsString;
 use Marcosh\PhpValidationDSL\Combinator\Any;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('Any', function () {
     it('returns a error result in every case if it does not contain any validator', function () {
@@ -52,6 +53,25 @@ describe('Any', function () {
             expect($any->validate(42)->equals(ValidationResult::errors([
                 IsString::NOT_A_STRING,
                 IsBool::NOT_A_BOOL
+            ])))->toBeTruthy();
+        }
+    );
+
+    it(
+        'returns a translated error result if every validator fails with the errors combined by the translator',
+        function () {
+            $any = Any::validationsWithTranslator([
+                new IsString(),
+                new IsBool()
+            ], KeyValueTranslator::withDictionary([
+                Any::NOT_EVEN_ONE => 'NOT EVEN ONE!'
+            ]));
+
+            expect($any->validate(42)->equals(ValidationResult::errors([
+                'NOT EVEN ONE!' => [
+                    IsString::NOT_A_STRING,
+                    IsBool::NOT_A_BOOL
+                ]
             ])))->toBeTruthy();
         }
     );

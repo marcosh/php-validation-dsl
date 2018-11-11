@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsString;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsString', function () {
     $isString = new IsString();
@@ -24,5 +25,13 @@ describe('IsString', function () {
         });
 
         expect($isString->validate(true)->equals(ValidationResult::errors(['1'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not a string and a translator is passed', function () {
+        $isString = IsString::withTranslator(KeyValueTranslator::withDictionary([
+            IsString::NOT_A_STRING => 'NO STRING HERE!'
+        ]));
+
+        expect($isString->validate(true)->equals(ValidationResult::errors(['NO STRING HERE!'])))->toBeTruthy();
     });
 });

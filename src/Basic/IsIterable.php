@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Basic;
 
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 
@@ -21,5 +22,12 @@ final class IsIterable extends ComposingAssertion implements Validation
                     return [self::NOT_AN_ITERABLE];
                 }
         );
+    }
+
+    public static function withTranslator(Translator $translator): self
+    {
+        return new self(function ($data) use ($translator) {
+            return [$translator->translate(self::NOT_AN_ITERABLE)];
+        });
     }
 }

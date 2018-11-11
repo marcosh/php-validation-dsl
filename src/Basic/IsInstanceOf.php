@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 
@@ -40,6 +41,16 @@ final class IsInstanceOf implements Validation
     public static function withClassNameAndFormatter(string $className, callable $errorFormatter): self
     {
         return new self($className, $errorFormatter);
+    }
+
+    public static function withClassNameAndTranslator(string $className, Translator $translator): self
+    {
+        return new self(
+            $className,
+            function (string $className, $data) use ($translator) {
+                return [$translator->translate(self::NOT_AN_INSTANCE)];
+            }
+        );
     }
 
     public function validate($data, array $context = []): ValidationResult

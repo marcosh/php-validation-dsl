@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsIterable;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsIterable', function () {
     $isIterable = new IsIterable();
@@ -31,5 +32,13 @@ describe('IsIterable', function () {
         });
 
         expect($isIterable->validate('gigi')->equals(ValidationResult::errors(['gigi'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not iterable and a translator is passed', function () {
+        $isIterable = IsIterable::withTranslator(KeyValueTranslator::withDictionary([
+            IsIterable::NOT_AN_ITERABLE => 'NO ITERABLE HERE!'
+        ]));
+
+        expect($isIterable->validate('gigi')->equals(ValidationResult::errors(['NO ITERABLE HERE!'])))->toBeTruthy();
     });
 });

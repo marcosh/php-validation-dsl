@@ -4,39 +4,32 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Basic;
 
-use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 
-final class IsNull implements Validation
+final class IsNull extends ComposingAssertion implements Validation
 {
     public const NOT_NULL = 'is-null.not-null';
 
-    /**
-     * @var callable $data -> string[]
-     */
-    private $errorFormatter;
-
     public function __construct(?callable $errorFormatter = null)
     {
-        $this->errorFormatter = is_callable($errorFormatter) ?
-            $errorFormatter :
+        $this->isAsAsserted = IsAsAsserted::withAssertionAndErrorFormatter(
             function ($data) {
-                return [self::NOT_NULL];
-            };
+                return null === $data;
+            },
+            is_callable($errorFormatter) ?
+                $errorFormatter :
+                function ($data) {
+                    return [self::NOT_NULL];
+                }
+        );
     }
 
-    public static function withFormatter(callable $errorFormatter): self
+    public static function withTranslator(Translator $translator): self
     {
-        return new self($errorFormatter);
-    }
-
-    public function validate($data, array $context = []): ValidationResult
-    {
-        if ($data !== null) {
-            return ValidationResult::errors(($this->errorFormatter)($data));
-        }
-
-        return ValidationResult::valid($data);
+        return new self(function ($data) use ($translator) {
+            return [$translator->translate(self::NOT_NULL)];
+        });
     }
 }

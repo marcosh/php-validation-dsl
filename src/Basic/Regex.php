@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 use function preg_match;
@@ -41,6 +42,16 @@ final class Regex implements Validation
     public static function withPatternAndFormatter(string $pattern, callable $errorFormatter):self
     {
         return new self($pattern, $errorFormatter);
+    }
+
+    public static function withPatternAndTranslator(string $pattern, Translator $translator): self
+    {
+        return new self(
+            $pattern,
+            function (string $key, $data) use ($translator) {
+                return [$translator->translate(self::MATCH_FAILED)];
+            }
+        );
     }
 
     public function validate($data, array $context = []): ValidationResult

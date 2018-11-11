@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 use Marcosh\PhpValidationDSL\Basic\HasKey;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use function json_encode;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('HasKey', function () {
     $hasKey = HasKey::withKey('key');
@@ -31,5 +32,18 @@ describe('HasKey', function () {
         $data = [];
 
         expect($hasKey->validate($data)->equals(ValidationResult::errors(['key' . json_encode([])])))->toBeTruthy();
+    });
+
+    it('returns a translated error message if the key is not present and a translator is passed', function () {
+        $hasKey = HasKey::withKeyAndTranslator(
+            'key',
+            KeyValueTranslator::withDictionary([
+                HasKey::MISSING_KEY => 'MISSING KEY!'
+            ])
+        );
+
+        $data = [];
+
+        expect($hasKey->validate($data)->equals(ValidationResult::errors(['MISSING KEY!'])))->toBeTruthy();
     });
 });

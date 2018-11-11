@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsObject;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsObject', function () {
     $isObject = new IsObject();
@@ -26,5 +27,13 @@ describe('IsObject', function () {
         });
 
         expect($isObject->validate(true)->equals(ValidationResult::errors(['1'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not an object and a translator is passed', function () {
+        $isObject = IsObject::withTranslator(KeyValueTranslator::withDictionary([
+            IsObject::NOT_AN_OBJECT => 'NO OBJECT HERE!'
+        ]));
+
+        expect($isObject->validate(true)->equals(ValidationResult::errors(['NO OBJECT HERE!'])))->toBeTruthy();
     });
 });

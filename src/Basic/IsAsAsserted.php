@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 
@@ -40,6 +41,16 @@ final class IsAsAsserted implements Validation
     public static function withAssertionAndErrorFormatter(callable $assertion, callable $errorFormatter): self
     {
         return new self($assertion, $errorFormatter);
+    }
+
+    public static function withAssertionAndTranslator(callable $assertion, Translator $translator): self
+    {
+        return new self(
+            $assertion,
+            function ($data) use ($translator) {
+                return [$translator->translate(self::NOT_AS_ASSERTED)];
+            }
+        );
     }
 
     public function validate($data, array $context = []): ValidationResult

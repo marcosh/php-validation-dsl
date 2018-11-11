@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsAsAsserted;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsAsAsserted', function () {
     $isAsAsserted = IsAsAsserted::withAssertion(function ($data) {
@@ -34,6 +35,23 @@ describe('IsAsAsserted', function () {
             );
 
             expect($isAsAsserted->validate('fortytwo')->equals(ValidationResult::errors(['not 42'])))->toBeTruthy();
+        }
+    );
+
+    it(
+        'returns a translated error result if the assertion is not satisfied and a translator is passed',
+        function () {
+            $isAsAsserted = IsAsAsserted::withAssertionAndTranslator(
+                function ($data) {
+                    return $data === 42;
+                },
+                KeyValueTranslator::withDictionary([
+                    IsAsAsserted::NOT_AS_ASSERTED => 'NOT AS ASSERTED!'
+                ])
+            );
+
+            expect($isAsAsserted->validate('fortytwo')->equals(ValidationResult::errors(['NOT AS ASSERTED!'])))
+                ->toBeTruthy();
         }
     );
 });

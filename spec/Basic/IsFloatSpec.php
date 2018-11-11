@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsFloat;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 describe('IsFloat', function () {
     $isFloat = new IsFloat();
@@ -24,5 +25,13 @@ describe('IsFloat', function () {
         });
 
         expect($isFloat->validate('gigi')->equals(ValidationResult::errors(['gigi'])))->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not a float and a translator is passed', function () {
+        $isFloat = IsFloat::withTranslator(KeyValueTranslator::withDictionary([
+            IsFloat::NOT_A_FLOAT => 'NO FLOAT HERE!'
+        ]));
+
+        expect($isFloat->validate('gigi')->equals(ValidationResult::errors(['NO FLOAT HERE!'])))->toBeTruthy();
     });
 });

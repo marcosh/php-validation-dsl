@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function array_key_exists;
 use function is_callable;
@@ -41,6 +42,16 @@ final class HasKey implements Validation
     public static function withKeyAndFormatter(string $key, callable $errorFormatter): self
     {
         return new self($key, $errorFormatter);
+    }
+
+    public static function withKeyAndTranslator(string $key, Translator $translator): self
+    {
+        return new self(
+            $key,
+            function (string $key, $data) use ($translator) {
+                return [$translator->translate(self::MISSING_KEY)];
+            }
+        );
     }
 
     public function validate($data, array $context = []): ValidationResult

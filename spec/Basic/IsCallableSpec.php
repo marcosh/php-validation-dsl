@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsCallable;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 class CallableFoo
 {
@@ -49,5 +50,13 @@ describe('IsCallable', function () {
         });
 
         expect($isCallable->validate('true')->equals(ValidationResult::errors(['true'])))->toBeTruthy();
+    });
+
+    it('returns a translated error if the argument is not a callable and a translator is passed', function () {
+        $isCallable = IsCallable::withTranslator(KeyValueTranslator::withDictionary([
+            IsCallable::NOT_A_CALLABLE => 'NOT A CALLABLE!'
+        ]));
+
+        expect($isCallable->validate('true')->equals(ValidationResult::errors(['NOT A CALLABLE!'])))->toBeTruthy();
     });
 });

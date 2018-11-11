@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 use Marcosh\PhpValidationDSL\Basic\IsInstanceOf;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use function json_encode;
+use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 class InstanceFoo {};
 
@@ -34,6 +35,18 @@ describe('IsInstanceOf', function () {
         );
 
         expect($isInstanceOf->validate(new \stdClass())->equals(ValidationResult::errors([InstanceFoo::class . '{}'])))
+            ->toBeTruthy();
+    });
+
+    it('returns a translated error result if the argument is not a string and a translator is passed', function () {
+        $isInstanceOf = IsInstanceOf::withClassNameAndTranslator(
+            InstanceFoo::class,
+            KeyValueTranslator::withDictionary([
+                IsInstanceOf::NOT_AN_INSTANCE => 'NO INSTANCE HERE!'
+            ])
+        );
+
+        expect($isInstanceOf->validate(new \stdClass())->equals(ValidationResult::errors(['NO INSTANCE HERE!'])))
             ->toBeTruthy();
     });
 });
