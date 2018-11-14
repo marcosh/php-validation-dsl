@@ -34,8 +34,8 @@ describe('All', function () {
         ]);
 
         expect($all->validate(42)->equals(ValidationResult::errors([
-            IsString::NOT_A_STRING,
-            IsBool::NOT_A_BOOL
+            IsString::MESSAGE,
+            IsBool::MESSAGE
         ])))->toBeTruthy();
     });
 

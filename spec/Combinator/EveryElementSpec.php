@@ -26,7 +26,7 @@ describe('EveryElement', function () {
         $everyElement = EveryElement::validation(new IsString());
 
         expect($everyElement->validate(['gigi', 42])->equals(ValidationResult::errors([
-            1 => [IsString::NOT_A_STRING]
+            1 => [IsString::MESSAGE]
         ])))->toBeTruthy();
     });
 
@@ -43,8 +43,8 @@ describe('EveryElement', function () {
             );
 
             expect($everyElement->validate([true, 42])->equals(ValidationResult::errors([
-                0 . IsString::NOT_A_STRING,
-                1 . IsString::NOT_A_STRING
+                0 . IsString::MESSAGE,
+                1 . IsString::MESSAGE
             ])))->toBeTruthy();
         }
     );

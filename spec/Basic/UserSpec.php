@@ -49,7 +49,7 @@ describe('User validation', function () {
     ]);
 
     it('fails if the data is not an array', function () use ($userValidation) {
-        expect($userValidation->validate('gigi')->equals(ValidationResult::errors([IsArray::NOT_AN_ARRAY])))
+        expect($userValidation->validate('gigi')->equals(ValidationResult::errors([IsArray::MESSAGE])))
             ->toBeTruthy();
     });
 
@@ -61,14 +61,14 @@ describe('User validation', function () {
     it('fails if the name field is not a string', function () use ($userValidation) {
         expect(
             $userValidation->validate(['name' => 42, 'age' => 42])
-                ->equals(ValidationResult::errors([IsString::NOT_A_STRING]))
+                ->equals(ValidationResult::errors([IsString::MESSAGE]))
         )->toBeTruthy();
     });
 
     it('fails if the name field is an empty string', function () use ($userValidation) {
         expect(
             $userValidation->validate(['name' => '', 'age' => 42])
-                ->equals(ValidationResult::errors([NonEmpty::EMPTY]))
+                ->equals(ValidationResult::errors([NonEmpty::MESSAGE]))
         )->toBeTruthy();
     });
 
@@ -80,7 +80,7 @@ describe('User validation', function () {
     it('fails if the age field is not an integer', function () use ($userValidation) {
         expect(
             $userValidation->validate(['name' => 'gigi', 'age' => 'gigi'])
-                ->equals(ValidationResult::errors([IsInteger::NOT_AN_INTEGER]))
+                ->equals(ValidationResult::errors([IsInteger::MESSAGE]))
         )->toBeTruthy();
     });
 

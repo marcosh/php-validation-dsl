@@ -6,30 +6,45 @@ namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
+use function is_callable;
 
 abstract class ComposingAssertion
 {
-    /**
-     * @var IsAsAsserted
-     */
-    protected $isAsAsserted;
+    public const MESSAGE = 'composing-assertion.not-as-asserted';
 
-    abstract public function __construct(?callable $errorFormatter = null);
+    /**
+     * @var callable $data -> string[]
+     */
+    private $errorFormatter;
+
+    public function __construct(?callable $errorFormatter = null)
+    {
+        $this->errorFormatter = $errorFormatter;
+    }
 
     public static function withFormatter(callable $errorFormatter): self
     {
         return new static($errorFormatter);
     }
 
-    public function validate($data, array $context = []): ValidationResult
+    public static function withTranslator(Translator $translator): self
     {
-        return $this->isAsAsserted->validate($data, $context);
+        return new static(function ($data) use ($translator) {
+            return [$translator->translate(static::MESSAGE)];
+        });
     }
 
-    protected static function withTranslatorAndMessage(Translator $translator, string $message)
+    abstract public function validate($data, array $context = []): ValidationResult;
+
+    protected function validateAssertion(callable $assertion, $data, array $context = []): ValidationResult
     {
-        return new static(function ($data) use ($translator, $message) {
-            return [$translator->translate($message)];
-        });
+        return IsAsAsserted::withAssertionAndErrorFormatter(
+            $assertion,
+            is_callable($this->errorFormatter) ?
+                $this->errorFormatter :
+                function ($data) {
+                    return [static::MESSAGE];
+                }
+        )->validate($data, $context);
     }
 }

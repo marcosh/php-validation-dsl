@@ -16,7 +16,7 @@ describe('IsBool', function () {
     });
 
     it('returns an error result if the argument is not a boolean', function () use ($isBool) {
-        expect($isBool->validate('true')->equals(ValidationResult::errors([IsBool::NOT_A_BOOL])))->toBeTruthy();
+        expect($isBool->validate('true')->equals(ValidationResult::errors([IsBool::MESSAGE])))->toBeTruthy();
     });
 
     it('returns an error result if the argument is not a boolean and a custom formatter is passed', function () {
@@ -29,7 +29,7 @@ describe('IsBool', function () {
 
     it('returns a translated error message if the argument is not a boolean and a translator is passed', function () {
         $isArray = IsBool::withTranslator(KeyValueTranslator::withDictionary([
-            IsBool::NOT_A_BOOL => 'NO BOOL HERE!'
+            IsBool::MESSAGE => 'NO BOOL HERE!'
         ]));
 
         expect($isArray->validate(42)->equals(ValidationResult::errors(['NO BOOL HERE!'])))->toBeTruthy();

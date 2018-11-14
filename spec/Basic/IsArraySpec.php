@@ -16,7 +16,7 @@ describe('IsArray', function () {
     });
 
     it('returns an error result if the argument is not an array', function () use ($isArray) {
-        expect($isArray->validate(42)->equals(ValidationResult::errors([IsArray::NOT_AN_ARRAY])))->toBeTruthy();
+        expect($isArray->validate(42)->equals(ValidationResult::errors([IsArray::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not an array and a custom formatter is passed', function () {
@@ -29,7 +29,7 @@ describe('IsArray', function () {
 
     it('returns a translated error message if the argument is not an array and a translator is passed', function () {
         $isArray = IsArray::withTranslator(KeyValueTranslator::withDictionary([
-            IsArray::NOT_AN_ARRAY => 'NO ARRAY HERE!'
+            IsArray::MESSAGE => 'NO ARRAY HERE!'
         ]));
 
         expect($isArray->validate(42)->equals(ValidationResult::errors(['NO ARRAY HERE!'])))->toBeTruthy();

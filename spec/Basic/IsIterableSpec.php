@@ -22,7 +22,7 @@ describe('IsIterable', function () {
     });
 
     it('returns an error result if the argument is not an iterable', function () use ($isIterable) {
-        expect($isIterable->validate('gigi')->equals(ValidationResult::errors([IsIterable::NOT_AN_ITERABLE])))
+        expect($isIterable->validate('gigi')->equals(ValidationResult::errors([IsIterable::MESSAGE])))
             ->toBeTruthy();
     });
 
@@ -36,7 +36,7 @@ describe('IsIterable', function () {
 
     it('returns a translated error result if the argument is not iterable and a translator is passed', function () {
         $isIterable = IsIterable::withTranslator(KeyValueTranslator::withDictionary([
-            IsIterable::NOT_AN_ITERABLE => 'NO ITERABLE HERE!'
+            IsIterable::MESSAGE => 'NO ITERABLE HERE!'
         ]));
 
         expect($isIterable->validate('gigi')->equals(ValidationResult::errors(['NO ITERABLE HERE!'])))->toBeTruthy();

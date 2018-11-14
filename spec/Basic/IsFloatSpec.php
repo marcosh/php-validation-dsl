@@ -16,7 +16,7 @@ describe('IsFloat', function () {
     });
 
     it('returns an error result if the argument is not a float', function () use ($isFloat) {
-        expect($isFloat->validate('gigi')->equals(ValidationResult::errors([IsFloat::NOT_A_FLOAT])))->toBeTruthy();
+        expect($isFloat->validate('gigi')->equals(ValidationResult::errors([IsFloat::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not a float and a custom formatter is passed', function () {
@@ -29,7 +29,7 @@ describe('IsFloat', function () {
 
     it('returns a translated error result if the argument is not a float and a translator is passed', function () {
         $isFloat = IsFloat::withTranslator(KeyValueTranslator::withDictionary([
-            IsFloat::NOT_A_FLOAT => 'NO FLOAT HERE!'
+            IsFloat::MESSAGE => 'NO FLOAT HERE!'
         ]));
 
         expect($isFloat->validate('gigi')->equals(ValidationResult::errors(['NO FLOAT HERE!'])))->toBeTruthy();

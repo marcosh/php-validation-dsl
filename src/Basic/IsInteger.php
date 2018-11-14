@@ -4,28 +4,15 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Basic;
 
-use Marcosh\PhpValidationDSL\Translator\Translator;
+use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
-use function is_callable;
 
 final class IsInteger extends ComposingAssertion implements Validation
 {
-    public const NOT_AN_INTEGER = 'is-integer.not-an-integer';
+    public const MESSAGE = 'is-integer.not-an-integer';
 
-    public function __construct(?callable $errorFormatter = null)
+    public function validate($data, array $context = []): ValidationResult
     {
-        $this->isAsAsserted = IsAsAsserted::withAssertionAndErrorFormatter(
-            'is_int',
-            is_callable($errorFormatter) ?
-                $errorFormatter :
-                function ($data) {
-                    return [self::NOT_AN_INTEGER];
-                }
-        );
-    }
-
-    public static function withTranslator(Translator $translator): self
-    {
-        return self::withTranslatorAndMessage($translator, self::NOT_AN_INTEGER);
+        return parent::validateAssertion('is_int', $data, $context);
     }
 }

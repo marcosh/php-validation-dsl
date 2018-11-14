@@ -33,7 +33,7 @@ describe('Sequence', function () {
         ]);
 
         expect($sequence->validate(42)->equals(ValidationResult::errors([
-            IsString::NOT_A_STRING
+            IsString::MESSAGE
         ])))->toBeTruthy();
     });
 });

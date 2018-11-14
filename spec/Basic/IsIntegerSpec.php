@@ -16,7 +16,7 @@ describe('IsInteger', function () {
     });
 
     it('returns an error result if the argument is not an integer', function () use ($isInteger) {
-        expect($isInteger->validate('gigi')->equals(ValidationResult::errors([IsInteger::NOT_AN_INTEGER])))
+        expect($isInteger->validate('gigi')->equals(ValidationResult::errors([IsInteger::MESSAGE])))
             ->toBeTruthy();
     });
 
@@ -30,7 +30,7 @@ describe('IsInteger', function () {
 
     it('returns a translated error result if the argument is not an int and a translator is passed', function () {
         $isInteger = IsInteger::withTranslator(KeyValueTranslator::withDictionary([
-            IsInteger::NOT_AN_INTEGER => 'NO INTEGER HERE!'
+            IsInteger::MESSAGE => 'NO INTEGER HERE!'
         ]));
 
         expect($isInteger->validate('gigi')->equals(ValidationResult::errors(['NO INTEGER HERE!'])))->toBeTruthy();

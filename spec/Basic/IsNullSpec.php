@@ -16,7 +16,7 @@ describe('IsNull', function () {
     });
 
     it('returns an error result if the argument is not null', function () use ($isNull) {
-        expect($isNull->validate(42)->equals(ValidationResult::errors([IsNull::NOT_NULL])))->toBeTruthy();
+        expect($isNull->validate(42)->equals(ValidationResult::errors([IsNull::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is null and a custom formatter is passed', function () {
@@ -29,7 +29,7 @@ describe('IsNull', function () {
 
     it('returns a translated error result if the argument is null and a translator is passed', function () {
         $isNull = IsNull::withTranslator(KeyValueTranslator::withDictionary([
-            IsNull::NOT_NULL => 'NO NULL HERE!'
+            IsNull::MESSAGE => 'NO NULL HERE!'
         ]));
 
         expect($isNull->validate(42)->equals(ValidationResult::errors(['NO NULL HERE!'])))->toBeTruthy();

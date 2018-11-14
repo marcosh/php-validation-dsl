@@ -16,7 +16,7 @@ describe('NonEmpty', function () {
     });
 
     it('returns an error result if the argument is empty', function () use ($nonEmpty) {
-        expect($nonEmpty->validate([])->equals(ValidationResult::errors([NonEmpty::EMPTY])))->toBeTruthy();
+        expect($nonEmpty->validate([])->equals(ValidationResult::errors([NonEmpty::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is empty and a custom formatter is passed', function () {
@@ -29,7 +29,7 @@ describe('NonEmpty', function () {
 
     it('returns a translated error message if the argument is empty and a translator is passed', function () {
         $isArray = NonEmpty::withTranslator(KeyValueTranslator::withDictionary([
-            NonEmpty::EMPTY => 'EMPTY HERE!'
+            NonEmpty::MESSAGE => 'EMPTY HERE!'
         ]));
 
         expect($isArray->validate([])->equals(ValidationResult::errors(['EMPTY HERE!'])))->toBeTruthy();

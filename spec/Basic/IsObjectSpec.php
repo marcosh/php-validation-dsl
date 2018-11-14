@@ -18,7 +18,7 @@ describe('IsObject', function () {
     });
 
     it('returns an error result if the argument is not an object', function () use ($isObject) {
-        expect($isObject->validate(true)->equals(ValidationResult::errors([IsObject::NOT_AN_OBJECT])))->toBeTruthy();
+        expect($isObject->validate(true)->equals(ValidationResult::errors([IsObject::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not an object and a custom formatter is passed', function () {
@@ -31,7 +31,7 @@ describe('IsObject', function () {
 
     it('returns a translated error result if the argument is not an object and a translator is passed', function () {
         $isObject = IsObject::withTranslator(KeyValueTranslator::withDictionary([
-            IsObject::NOT_AN_OBJECT => 'NO OBJECT HERE!'
+            IsObject::MESSAGE => 'NO OBJECT HERE!'
         ]));
 
         expect($isObject->validate(true)->equals(ValidationResult::errors(['NO OBJECT HERE!'])))->toBeTruthy();

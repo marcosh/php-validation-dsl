@@ -28,7 +28,7 @@ describe('Focus', function () {
             new IsString()
         );
 
-        expect($focus->validate(['nested' => 42])->equals(ValidationResult::errors([IsString::NOT_A_STRING])))
+        expect($focus->validate(['nested' => 42])->equals(ValidationResult::errors([IsString::MESSAGE])))
             ->toBeTruthy();
     });
 });

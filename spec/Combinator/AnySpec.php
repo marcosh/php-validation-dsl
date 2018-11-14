@@ -34,8 +34,8 @@ describe('Any', function () {
 
         expect($any->validate(42)->equals(ValidationResult::errors([
             Any::NOT_EVEN_ONE => [
-                IsString::NOT_A_STRING,
-                IsBool::NOT_A_BOOL
+                IsString::MESSAGE,
+                IsBool::MESSAGE
             ]
         ])))->toBeTruthy();
     });
@@ -51,8 +51,8 @@ describe('Any', function () {
             });
 
             expect($any->validate(42)->equals(ValidationResult::errors([
-                IsString::NOT_A_STRING,
-                IsBool::NOT_A_BOOL
+                IsString::MESSAGE,
+                IsBool::MESSAGE
             ])))->toBeTruthy();
         }
     );
@@ -69,8 +69,8 @@ describe('Any', function () {
 
             expect($any->validate(42)->equals(ValidationResult::errors([
                 'NOT EVEN ONE!' => [
-                    IsString::NOT_A_STRING,
-                    IsBool::NOT_A_BOOL
+                    IsString::MESSAGE,
+                    IsBool::MESSAGE
                 ]
             ])))->toBeTruthy();
         }

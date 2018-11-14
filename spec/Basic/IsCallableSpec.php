@@ -40,7 +40,7 @@ describe('IsCallable', function () {
     });
 
     it('returns an error result if the argument is not a callable', function () use ($isCallable) {
-        expect($isCallable->validate('true')->equals(ValidationResult::errors([IsCallable::NOT_A_CALLABLE])))
+        expect($isCallable->validate('true')->equals(ValidationResult::errors([IsCallable::MESSAGE])))
             ->toBeTruthy();
     });
 
@@ -54,7 +54,7 @@ describe('IsCallable', function () {
 
     it('returns a translated error if the argument is not a callable and a translator is passed', function () {
         $isCallable = IsCallable::withTranslator(KeyValueTranslator::withDictionary([
-            IsCallable::NOT_A_CALLABLE => 'NOT A CALLABLE!'
+            IsCallable::MESSAGE => 'NOT A CALLABLE!'
         ]));
 
         expect($isCallable->validate('true')->equals(ValidationResult::errors(['NOT A CALLABLE!'])))->toBeTruthy();

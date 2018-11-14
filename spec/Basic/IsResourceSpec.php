@@ -19,7 +19,7 @@ describe('IsResource', function () {
     });
 
     it('returns an error result if the argument is not a resource', function () use ($isResource) {
-        expect($isResource->validate('gigi')->equals(ValidationResult::errors([IsResource::NOT_A_RESOURCE])))
+        expect($isResource->validate('gigi')->equals(ValidationResult::errors([IsResource::MESSAGE])))
             ->toBeTruthy();
     });
 
@@ -33,7 +33,7 @@ describe('IsResource', function () {
 
     it('returns a translated error result if the argument is not a resource and translator is passed', function () {
         $isResource = IsResource::withTranslator(KeyValueTranslator::withDictionary([
-            IsResource::NOT_A_RESOURCE => 'NO RESOURCE HERE!'
+            IsResource::MESSAGE => 'NO RESOURCE HERE!'
         ]));
 
         expect($isResource->validate('gigi')->equals(ValidationResult::errors(['NO RESOURCE HERE!'])))->toBeTruthy();

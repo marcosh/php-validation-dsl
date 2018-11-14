@@ -16,7 +16,7 @@ describe('IsString', function () {
     });
 
     it('returns an error result if the argument is not a string', function () use ($isString) {
-        expect($isString->validate(true)->equals(ValidationResult::errors([IsString::NOT_A_STRING])))->toBeTruthy();
+        expect($isString->validate(true)->equals(ValidationResult::errors([IsString::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the argument is not a string and a custom formatter is passed', function () {
@@ -29,7 +29,7 @@ describe('IsString', function () {
 
     it('returns a translated error result if the argument is not a string and a translator is passed', function () {
         $isString = IsString::withTranslator(KeyValueTranslator::withDictionary([
-            IsString::NOT_A_STRING => 'NO STRING HERE!'
+            IsString::MESSAGE => 'NO STRING HERE!'
         ]));
 
         expect($isString->validate(true)->equals(ValidationResult::errors(['NO STRING HERE!'])))->toBeTruthy();
