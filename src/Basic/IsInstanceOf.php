@@ -19,7 +19,7 @@ final class IsInstanceOf implements Validation
     private $className;
 
     /**
-     * @var callable $key -> $data -> string[]
+     * @var callable $className -> $data -> string[]
      */
     private $errorFormatter;
 
