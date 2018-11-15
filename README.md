@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.com/marcosh/php-validation-dsl.svg?branch=master)](https://travis-ci.org/marcosh/php-validation-dsl)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcosh/php-validation-dsl/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcosh/php-validation-dsl/?branch=master)
 [![Code Climate](https://codeclimate.com/github/marcosh/php-validation-dsl/badges/gpa.svg)](https://codeclimate.com/github/marcosh/php-validation-dsl)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdc36ac4877946bfa4bfb85666bf4323)](https://www.codacy.com/app/marcosh/php-validation-dsl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcosh/php-validation-dsl&amp;utm_campaign=Badge_Grade)
 
 A DSL for validating data in a functional fashion
 
