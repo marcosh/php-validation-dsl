@@ -214,6 +214,10 @@ messages.
 Every validator has also a named constructor receiving a `Translator` to
 translate the library-defined error messages.
 
+If you don't want to specify the translator for every single validator you
+define, there is also a `TranslateErrors` combinators which translates all the
+strings present in the return message.
+
 ## How to use this library
 
 This library is not build to be a ready-made artifact that you can install and
