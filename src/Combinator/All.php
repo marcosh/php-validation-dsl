@@ -27,7 +27,7 @@ final class All implements Validation
      * @param callable|null $errorFormatter
      * @throws InvalidArgumentException
      */
-    public function __construct(array $validations, ?callable $errorFormatter = null)
+    private function __construct(array $validations, ?callable $errorFormatter = null)
     {
         Assert::allIsInstanceOf($validations, Validation::class);
 
