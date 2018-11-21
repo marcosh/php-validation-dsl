@@ -7,8 +7,9 @@ namespace Marcosh\PhpValidationDSL\Basic;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use function is_callable;
+use Marcosh\PhpValidationDSL\Validation;
 
-final class HasNotKey
+final class HasNotKey implements Validation
 {
     public const PRESENT_KEY = 'has-not-key.present-key';
 
