@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - set `Any` constructor as private
 - added `MapError` validator
 - added `HasNotKey` validator
+- added `InArray` validator
 
 ## [0.1.0]
 
