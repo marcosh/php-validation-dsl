@@ -36,6 +36,6 @@ final class Map implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return $this->validation->validate($data)->map($this->function);
+        return $this->validation->validate($data, $context)->map($this->function);
     }
 }

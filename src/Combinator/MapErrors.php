@@ -36,6 +36,6 @@ final class MapErrors implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return $this->validation->validate($data)->mapErrors($this->function);
+        return $this->validation->validate($data, $context)->mapErrors($this->function);
     }
 }
