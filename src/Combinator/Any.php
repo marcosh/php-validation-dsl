@@ -81,7 +81,10 @@ final class Any implements Validation
             $result = $result->meet($validation->validate($data, $context), 'array_merge');
         }
 
-        $result = $result->mapErrors($this->errorFormatter);
-        return $result;
+        return $result
+            ->mapErrors($this->errorFormatter)
+            ->map(function () use ($data) {
+                return $data;
+            });
     }
 }
