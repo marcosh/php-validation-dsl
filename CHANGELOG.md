@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2018-12-05
+
+- return received `$data` in `Focus` combinator
+
 ## [0.2.2] - 2018-12-03
 
 - return `$data` in valid result for `Any` combinator

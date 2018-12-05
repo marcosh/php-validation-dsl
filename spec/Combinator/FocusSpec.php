@@ -17,7 +17,8 @@ describe('Focus', function () {
             new IsString()
         );
 
-        expect($focus->validate(['nested' => 'gigi'])->equals(ValidationResult::valid('gigi')))->toBeTruthy();
+        expect($focus->validate(['nested' => 'gigi'])->equals(ValidationResult::valid(['nested' => 'gigi'])))
+            ->toBeTruthy();
     });
 
     it('returns an error result if the mapped data is not valid', function () {

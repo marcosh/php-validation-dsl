@@ -42,6 +42,9 @@ final class Focus implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return $this->validation->validate(($this->focus)($data), $context);
+        return $this->validation->validate(($this->focus)($data), $context)
+            ->map(function () use ($data) {
+                return $data;
+            });
     }
 }
