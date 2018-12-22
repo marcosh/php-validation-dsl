@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - added `Valid` validator
+- added `Errors` validator
 
 ## [0.2.3] - 2018-12-05
 
