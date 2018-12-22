@@ -13,7 +13,7 @@ final class Errors extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        $alwaysFalse = function ($data) {
+        $alwaysFalse = function($data) {
             return false;
         };
 
