@@ -12,6 +12,7 @@ before_script:
   - composer install --prefer-source --no-interaction
 
 script:
+  - vendor/bin/phpcs --standard=PSR2 src
   - vendor/bin/composer-require-checker check
   - vendor/bin/kahlan
 

@@ -21,6 +21,7 @@
     "require-dev": {
         "ext-json": "^1.5",
         "maglnet/composer-require-checker": "^1.1",
-        "kahlan/kahlan": "^4.3"
+        "kahlan/kahlan": "^4.3",
+        "squizlabs/php_codesniffer": "^3.4"
     }
 }
