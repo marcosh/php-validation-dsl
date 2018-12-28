@@ -7,6 +7,9 @@ php:
   - 7.2
   - nightly
 
+install:
+  - composer require --dev satooshi/php-coveralls
+
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction
@@ -15,7 +18,10 @@ script:
   - vendor/bin/phpcs --standard=PSR2 src
   - vendor/bin/phpstan analyze src -l max
   - vendor/bin/composer-require-checker check
-  - vendor/bin/kahlan
+  - mkdir -p build/logs && vendor/bin/kahlan --clover=build/logs/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls -v
 
 notifications:
   email:
