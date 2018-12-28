@@ -2,13 +2,16 @@ sudo: false
 
 language: php
 
-php:
-  - 7.1
-  - 7.2
-  - 7.3
+matrix:
+  include:
+    - php: 7.1
+    - php: 7.2
+      env:
+        - COVERAGE=1
+    - php: 7.3
 
 install:
-  - composer require --dev satooshi/php-coveralls
+  - if [ $COVERAGE = "1" ]; then composer require --dev satooshi/php-coveralls; fi
 
 before_script:
   - composer self-update
@@ -18,10 +21,10 @@ script:
   - vendor/bin/phpcs --standard=PSR2 src
   - vendor/bin/phpstan analyze src -l max
   - vendor/bin/composer-require-checker check
-  - mkdir -p build/logs && vendor/bin/kahlan --clover=build/logs/clover.xml
+  - if [ $COVERAGE = "1" ]; then mkdir -p build/logs && vendor/bin/kahlan --clover=build/logs/clover.xml; fi
 
 after_success:
-  - travis_retry php vendor/bin/php-coveralls -v
+  - if [ $COVERAGE = "1" ]; then travis_retry php vendor/bin/php-coveralls -v; fi
 
 notifications:
   email:
