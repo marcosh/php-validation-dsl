@@ -12,7 +12,8 @@ before_script:
   - composer install --prefer-source --no-interaction
 
 script:
-  vendor/bin/kahlan
+  - vendor/bin/composer-require-checker check
+  - vendor/bin/kahlan
 
 notifications:
   email:
