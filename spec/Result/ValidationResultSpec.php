@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSLSpec\Result;
 
+use Marcosh\PhpValidationDSL\Basic\IsAsAsserted;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
 describe('Validation result', function () {
@@ -147,6 +148,30 @@ describe('Validation result', function () {
         };
 
         expect($result->mapErrors($arrayUp))->toEqual(ValidationResult::errors(['GIGI']));
+    });
+
+    it('binds correctly a valid result', function () {
+        $result = ValidationResult::valid(42);
+
+        $bind = function (int $n) {
+            return IsAsAsserted::withAssertion(function (int $m) use ($n) {
+                return $m < $n;
+            })->validate(37);
+        };
+
+        expect($result->bind($bind))->toEqual(ValidationResult::valid(37));
+    });
+
+    it('binds correctly an invalid result', function () {
+        $result = ValidationResult::errors(['gigi']);
+
+        $bind = function (int $n) {
+            return IsAsAsserted::withAssertion(function (int $m) use ($n) {
+                return $m < $n;
+            })->validate(37);
+        };
+
+        expect($result->bind($bind))->toEqual($result);
     });
 
     it('is equal to another result with the same valid content', function () {

@@ -107,6 +107,22 @@ final class ValidationResult
         );
     }
 
+    /**
+     * @param callable $bind : validContent -> ValidationResult
+     * @return ValidationResult
+     */
+    public function bind(callable $bind): self
+    {
+        return $this->process(
+            function ($validContent) use ($bind) {
+                return $bind($validContent);
+            },
+            function (array $messages) {
+                return self::errors($messages);
+            }
+        );
+    }
+
     public function equals(self $that): bool
     {
         return ($this->isValid && $that->isValid && $this->validContent === $that->validContent) ||
