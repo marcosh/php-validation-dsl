@@ -108,8 +108,31 @@ final class ValidationResult
     }
 
     /**
+     * @param ValidationResult $apply contains a callable
+     * @return self
+     */
+    public function apply(ValidationResult $apply): self
+    {
+        return $apply->process(
+            function (callable $validApply) {
+                return $this->map($validApply);
+            },
+            function (array $applyMessages) {
+                return $this->process(
+                    function ($validContent) use ($applyMessages) {
+                        return self::errors($applyMessages);
+                    },
+                    function (array $messages) use ($applyMessages) {
+                        return $applyMessages + $messages;
+                    }
+                );
+            }
+        );
+    }
+
+    /**
      * @param callable $bind : validContent -> ValidationResult
-     * @return ValidationResult
+     * @return self
      */
     public function bind(callable $bind): self
     {
