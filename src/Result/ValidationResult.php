@@ -123,7 +123,7 @@ final class ValidationResult
                         return self::errors($applyMessages);
                     },
                     function (array $messages) use ($applyMessages) {
-                        return $applyMessages + $messages;
+                        return self::errors(array_merge($messages, $applyMessages));
                     }
                 );
             }

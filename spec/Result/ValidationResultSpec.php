@@ -174,6 +174,38 @@ describe('Validation result', function () {
         expect($result->bind($bind))->toEqual($result);
     });
 
+    it('applies correctly a valid function to a valid result', function () {
+        $result = ValidationResult::valid(42);
+
+        $apply = ValidationResult::valid(function (int $x) {return $x + 3;});
+
+        expect($result->apply($apply))->toEqual(ValidationResult::valid(45));
+    });
+
+    it('applies a valid function to an invalid result producing the same invalid result', function () {
+        $result = ValidationResult::errors(['gigi']);
+
+        $apply = ValidationResult::valid(function (int $x) {return $x + 3;});
+
+        expect($result->apply($apply))->toEqual($result);
+    });
+
+    it('applies an invalid function to a valid result producing an invalid result', function () {
+        $result = ValidationResult::valid(42);
+
+        $apply = ValidationResult::errors(['gigi']);
+
+        expect($result->apply($apply))->toEqual($apply);
+    });
+
+    it('applies an invalid function to an invalid result producing an invalid result with both error messages', function () {
+        $result = ValidationResult::errors(['gigi']);
+
+        $apply = ValidationResult::errors(['toni']);
+
+        expect($result->apply($apply))->toEqual(ValidationResult::errors(['gigi', 'toni']));
+    });
+
     it('is equal to another result with the same valid content', function () {
         $result1 = ValidationResult::valid(42);
         $result2 = ValidationResult::valid(42);
