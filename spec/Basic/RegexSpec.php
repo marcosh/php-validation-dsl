@@ -16,7 +16,7 @@ describe('Regex', function () {
     });
 
     it('returns an error result if the pattern does not match', function () use ($regex) {
-        expect($regex->validate('gigi@zucon')->equals(ValidationResult::errors([Regex::MATCH_FAILED])))->toBeTruthy();
+        expect($regex->validate('gigi@zucon')->equals(ValidationResult::errors([Regex::MESSAGE])))->toBeTruthy();
     });
 
     it('returns a custom error result if the pattern does not match and a custom formatter is passed', function () {
@@ -32,7 +32,7 @@ describe('Regex', function () {
         $regex = Regex::withPatternAndTranslator(
             '/^[\p{L} ]*$/u',
             KeyValueTranslator::withDictionary([
-                Regex::MATCH_FAILED => 'NO MATCH HERE!'
+                Regex::MESSAGE => 'NO MATCH HERE!'
             ])
         );
 

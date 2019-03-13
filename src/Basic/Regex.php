@@ -12,7 +12,7 @@ use function preg_match;
 
 final class Regex implements Validation
 {
-    public const MATCH_FAILED = 'regex.match-failed';
+    public const MESSAGE = 'regex.match-failed';
 
     /**
      * @var string
@@ -30,7 +30,7 @@ final class Regex implements Validation
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             function (string $key, $data) {
-                return [self::MATCH_FAILED];
+                return [self::MESSAGE];
             };
     }
 
@@ -49,7 +49,7 @@ final class Regex implements Validation
         return new self(
             $pattern,
             function (string $key, $data) use ($translator) {
-                return [$translator->translate(self::MATCH_FAILED)];
+                return [$translator->translate(self::MESSAGE)];
             }
         );
     }

@@ -21,7 +21,7 @@ describe('Bind', function () {
 
     it('does not modify the result of a failed validation', function () use ($f) {
         expect(
-            Bind::to(new IsString(), $f)->validate('/[def]+/')->equals(ValidationResult::errors([Regex::MATCH_FAILED]))
+            Bind::to(new IsString(), $f)->validate('/[def]+/')->equals(ValidationResult::errors([Regex::MESSAGE]))
         )->toBeTruthy();
     });
 });
