@@ -13,6 +13,6 @@ final class IsString extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_string', $data, $context);
+        return $this->validateAssertion('is_string', $data, $context);
     }
 }

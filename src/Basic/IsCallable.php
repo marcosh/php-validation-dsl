@@ -13,6 +13,6 @@ final class IsCallable extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_callable', $data, $context);
+        return $this->validateAssertion('is_callable', $data, $context);
     }
 }

@@ -13,7 +13,7 @@ final class IsNull extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion(
+        return $this->validateAssertion(
             function ($data) {
                 return null === $data;
             },

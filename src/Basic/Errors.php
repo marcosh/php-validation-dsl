@@ -17,6 +17,6 @@ final class Errors extends ComposingAssertion implements Validation
             return false;
         };
 
-        return parent::validateAssertion($alwaysFalse, $data, $context);
+        return $this->validateAssertion($alwaysFalse, $data, $context);
     }
 }

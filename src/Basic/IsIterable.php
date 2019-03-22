@@ -13,6 +13,6 @@ final class IsIterable extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_iterable', $data, $context);
+        return $this->validateAssertion('is_iterable', $data, $context);
     }
 }

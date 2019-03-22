@@ -13,6 +13,6 @@ final class IsArray extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_array', $data, $context);
+        return $this->validateAssertion('is_array', $data, $context);
     }
 }

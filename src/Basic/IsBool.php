@@ -13,6 +13,6 @@ final class IsBool extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_bool', $data, $context);
+        return $this->validateAssertion('is_bool', $data, $context);
     }
 }

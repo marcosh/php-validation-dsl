@@ -13,6 +13,6 @@ final class IsInteger extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_int', $data, $context);
+        return $this->validateAssertion('is_int', $data, $context);
     }
 }

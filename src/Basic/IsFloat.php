@@ -13,6 +13,6 @@ final class IsFloat extends ComposingAssertion implements Validation
 
     public function validate($data, array $context = []): ValidationResult
     {
-        return parent::validateAssertion('is_float', $data, $context);
+        return $this->validateAssertion('is_float', $data, $context);
     }
 }
