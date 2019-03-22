@@ -30,7 +30,7 @@ final class MapErrors implements Validation
     public static function to(
         Validation $validation,
         callable $function
-    ) {
+    ): self {
         return new self($validation, $function);
     }
 

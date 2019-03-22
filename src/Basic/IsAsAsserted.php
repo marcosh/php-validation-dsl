@@ -14,12 +14,12 @@ final class IsAsAsserted implements Validation
     public const NOT_AS_ASSERTED = 'is-as-asserted.not-as-asserted';
 
     /**
-     * @var callable $data -> bool
+     * @var callable with signature $data -> bool
      */
     private $assertion;
 
     /**
-     * @var callable $data -> string[]
+     * @var callable with signature $data -> string[]
      */
     private $errorFormatter;
 

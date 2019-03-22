@@ -13,7 +13,7 @@ abstract class ComposingAssertion
     public const MESSAGE = 'composing-assertion.not-as-asserted';
 
     /**
-     * @var callable $data -> string[]
+     * @var callable|null with signature $data -> string[]
      */
     private $errorFormatter;
 
@@ -34,8 +34,19 @@ abstract class ComposingAssertion
         });
     }
 
+    /**
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     abstract public function validate($data, array $context = []): ValidationResult;
 
+    /**
+     * @param callable $assertion
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     protected function validateAssertion(callable $assertion, $data, array $context = []): ValidationResult
     {
         return IsAsAsserted::withAssertionAndErrorFormatter(

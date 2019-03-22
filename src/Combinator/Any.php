@@ -20,7 +20,7 @@ final class Any implements Validation
     private $validations;
 
     /**
-     * @var callable $messages -> array
+     * @var callable with signature $messages -> array
      */
     private $errorFormatter;
 

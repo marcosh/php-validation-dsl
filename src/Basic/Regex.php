@@ -20,7 +20,7 @@ final class Regex implements Validation
     private $pattern;
 
     /**
-     * @var callable $pattern -> $data -> string[]
+     * @var callable with signature $pattern -> $data -> string[]
      */
     private $errorFormatter;
 

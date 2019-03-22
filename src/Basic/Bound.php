@@ -15,16 +15,24 @@ abstract class Bound
     protected $bound;
 
     /**
-     * @var callable $bound -> $data -> string[]
+     * @var callable with signature $bound -> $data -> string[]
      */
     private $errorFormatter;
 
+    /**
+     * @param mixed $bound
+     * @param callable $errorFormatter
+     */
     private function __construct($bound, callable $errorFormatter)
     {
         $this->bound = $bound;
         $this->errorFormatter = $errorFormatter;
     }
 
+    /**
+     * @param mixed $bound
+     * @return Bound
+     */
     public static function withBound($bound): self
     {
         return self::withBoundAndFormatter(
@@ -35,11 +43,21 @@ abstract class Bound
         );
     }
 
+    /**
+     * @param mixed $bound
+     * @param callable $errorFormatter
+     * @return Bound
+     */
     public static function withBoundAndFormatter($bound, callable $errorFormatter): self
     {
         return new static($bound, $errorFormatter);
     }
 
+    /**
+     * @param mixed $bound
+     * @param Translator $translator
+     * @return Bound
+     */
     public static function withBoundAndTranslator($bound, Translator $translator): self
     {
         return self::withBoundAndFormatter(
@@ -50,8 +68,19 @@ abstract class Bound
         );
     }
 
+    /**
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     abstract public function validate($data, array $context = []): ValidationResult;
 
+    /**
+     * @param callable $assertion
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     protected function validateAssertion(callable $assertion, $data, array $context = []): ValidationResult
     {
         $bound = $this->bound;
@@ -61,13 +90,9 @@ abstract class Bound
             function ($data) use ($bound, $assertion) {
                 return $assertion($bound, $data);
             },
-            is_callable($this->errorFormatter) ?
-                function ($data) use ($bound, $errorFormatter) {
-                    return $errorFormatter($bound, $data);
-                } :
-                function ($data) {
-                    return [static::MESSAGE];
-                }
+            function ($data) use ($bound, $errorFormatter) {
+                return $errorFormatter($bound, $data);
+            }
         )->validate($data, $context);
     }
 }

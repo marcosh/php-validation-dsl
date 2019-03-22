@@ -21,6 +21,11 @@ final class ValidationResult
      */
     private $messages;
 
+    /**
+     * @param bool $isValid
+     * @param mixed $validContent
+     * @param array $messages
+     */
     private function __construct(
         bool $isValid,
         $validContent,
@@ -31,6 +36,10 @@ final class ValidationResult
         $this->messages = $messages;
     }
 
+    /**
+     * @param mixed $validContent
+     * @return self
+     */
     public static function valid($validContent): self
     {
         return new self(true, $validContent, []);

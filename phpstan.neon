@@ -1,0 +1,7 @@
+parameters:
+    ignoreErrors:
+        - message: '#Construct empty()#'
+          path: src/Basic/NonEmpty.php
+
+includes:
+	- vendor/phpstan/phpstan-strict-rules/rules.neon

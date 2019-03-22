@@ -32,18 +32,18 @@ final class EveryElement implements Validation
             };
     }
 
-    public static function validation(Validation $validation)
+    public static function validation(Validation $validation): self
     {
         return new self($validation);
     }
 
-    public static function validationWithFormatter(Validation $validation, callable  $errorFormatter)
+    public static function validationWithFormatter(Validation $validation, callable  $errorFormatter): self
     {
         return new self($validation, $errorFormatter);
     }
 
     /**
-     * @param array $data
+     * @param mixed $data should receive an array; the type hint is mixed because of contravariance
      * @param array $context
      * @return ValidationResult
      */

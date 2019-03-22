@@ -9,7 +9,7 @@ use Marcosh\PhpValidationDSL\Translator\Translator;
 final class Coalesce implements Translator
 {
     /**
-     * @var Translator[]
+     * @var (Translator|null)[]
      */
     private $translators;
 

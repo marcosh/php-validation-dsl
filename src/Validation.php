@@ -8,5 +8,10 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
 interface Validation
 {
+    /**
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     public function validate($data, array $context = []): ValidationResult;
 }

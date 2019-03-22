@@ -20,7 +20,7 @@ final class InArray implements Validation
     private $values;
 
     /**
-     * @var callable $values -> $data -> string[]
+     * @var callable with signature $values -> $data -> string[]
      */
     private $errorFormatter;
 

@@ -19,7 +19,7 @@ final class HasNotKey implements Validation
     private $key;
 
     /**
-     * @var callable $key -> $data -> string[]
+     * @var callable with signature $key -> $data -> string[]
      */
     private $errorFormatter;
 
