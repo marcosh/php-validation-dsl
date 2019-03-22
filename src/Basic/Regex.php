@@ -20,7 +20,7 @@ final class Regex implements Validation
     private $pattern;
 
     /**
-     * @var callable $key -> $data -> string[]
+     * @var callable $pattern -> $data -> string[]
      */
     private $errorFormatter;
 
@@ -29,17 +29,17 @@ final class Regex implements Validation
         $this->pattern = $pattern;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function (string $key, $data) {
+            function (string $pattern, $data) {
                 return [self::MESSAGE];
             };
     }
 
-    public static function withPattern(string $pattern):self
+    public static function withPattern(string $pattern): self
     {
         return new self($pattern);
     }
 
-    public static function withPatternAndFormatter(string $pattern, callable $errorFormatter):self
+    public static function withPatternAndFormatter(string $pattern, callable $errorFormatter): self
     {
         return new self($pattern, $errorFormatter);
     }
@@ -48,7 +48,7 @@ final class Regex implements Validation
     {
         return new self(
             $pattern,
-            function (string $key, $data) use ($translator) {
+            function (string $pattern, $data) use ($translator) {
                 return [$translator->translate(self::MESSAGE)];
             }
         );
