@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Result;
 
+use Marcosh\PhpValidationDSL\Equality;
+
 final class ValidationResult
 {
     /**
@@ -157,7 +159,15 @@ final class ValidationResult
 
     public function equals(self $that): bool
     {
-        return ($this->isValid && $that->isValid && $this->validContent === $that->validContent) ||
+        if (is_object($this->validContent) && is_object($that->validContent) &&
+            get_class($this->validContent) === get_class($that->validContent) &&
+            $this->validContent instanceof Equality) {
+            $contentEquality = $this->validContent->equals($that->validContent);
+        } else {
+            $contentEquality = $this->validContent === $that->validContent;
+        }
+
+        return ($this->isValid && $that->isValid && $contentEquality) ||
             (!$this->isValid && !$that->isValid && $this->messages === $that->messages);
     }
 }
