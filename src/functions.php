@@ -48,13 +48,19 @@ function curry(callable $f): callable
  */
 function uncurry(callable $f): callable
 {
-    return function (...$params) use ($f) {
+    return static function (...$params) use ($f) {
         if ([] === $params) {
-            return $f;
+            return $f();
         }
 
         $firstParam = $params[0];
 
-        return uncurry($f($firstParam))(array_slice($params, 1));
+        $firstApplication = $f($firstParam);
+
+        if (! is_callable($firstApplication)) {
+            return $firstApplication;
+        }
+
+        return uncurry($f($firstParam))(...array_slice($params, 1));
     };
 }

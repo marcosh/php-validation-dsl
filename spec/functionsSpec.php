@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace  Marcosh\PhpValidationDSLSpec;
 
 use function Marcosh\PhpValidationDSL\curry;
+use function Marcosh\PhpValidationDSL\uncurry;
 
 class Adder
 {
@@ -77,3 +78,42 @@ describe('curry function', function () {
     });
 });
 
+describe('uncurry function', function () {
+    it('does not modify a function with no arguments', function () {
+        $f = function () {
+            return 42;
+        };
+
+        expect(uncurry($f)())->toBe(42);
+    });
+
+    it('does not modify a function with one argument', function () {
+        $f = function (int $a) {
+            return $a + 3;
+        };
+
+        expect(uncurry($f)(2))->toBe(5);
+    });
+
+    it('uncurries a curried function with two arguments', function () {
+        $f = function (int $a) {
+            return function (int $b) use ($a) {
+                return $a + $b;
+            };
+        };
+
+        expect(uncurry($f)(2, 3))->toBe(5);
+    });
+
+    it('uncurries a curried function with three arguments', function () {
+        $f = function (int $a) {
+            return function ($b) use ($a) {
+                return function (int $c) use ($a, $b) {
+                    return $a + $b + $c;
+                };
+            };
+        };
+
+        expect(uncurry($f)(2, 3, 4))->toBe(9);
+    });
+});
