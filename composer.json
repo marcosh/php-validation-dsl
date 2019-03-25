@@ -16,7 +16,11 @@
     "autoload": {
         "psr-4": {
             "Marcosh\\PhpValidationDSL\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php",
+            "src/Result/functions.php"
+        ]
     },
     "require-dev": {
         "ext-json": "^1.5",
