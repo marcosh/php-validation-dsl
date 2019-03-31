@@ -196,7 +196,7 @@ describe('applicative style', function () {
     it('returns the correct error messages if both is and email are not valid', function () {
         expect(
             CustomerInfo::buildValidApplicative(-42, 'gigi')->equals(
-                ValidationResult::errors([Regex::MESSAGE, IsGreaterThan::MESSAGE])
+                ValidationResult::errors([IsGreaterThan::MESSAGE, Regex::MESSAGE])
             )
         )->toBeTruthy();
     });

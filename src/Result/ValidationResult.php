@@ -134,7 +134,7 @@ final class ValidationResult
                         return self::errors($applyMessages);
                     },
                     function (array $messages) use ($applyMessages) {
-                        return self::errors(array_merge($messages, $applyMessages));
+                        return self::errors(array_merge($applyMessages, $messages));
                     }
                 );
             }

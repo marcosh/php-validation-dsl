@@ -35,8 +35,8 @@ describe('Apply', function () {
             $f = ValidationResult::errors(['gigi']);
 
             expect(Apply::to(new IsString(), $f)->validate(42)->equals(ValidationResult::errors([
-                IsString::MESSAGE,
-                'gigi'
+                'gigi',
+                IsString::MESSAGE
             ])))->toBeTruthy();
         }
     );

@@ -203,7 +203,7 @@ describe('Validation result', function () {
 
         $apply = ValidationResult::errors(['toni']);
 
-        expect($result->apply($apply))->toEqual(ValidationResult::errors(['gigi', 'toni']));
+        expect($result->apply($apply))->toEqual(ValidationResult::errors(['toni', 'gigi']));
     });
 
     it('is equal to another result with the same valid content', function () {

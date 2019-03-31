@@ -10,8 +10,8 @@ use ReflectionFunction;
 /**
  * implementation heavily inspired by https://github.com/m4rw3r/autoCurry
  *
- * @param callable $f
- * @return callable
+ * @param callable $f with signature ($a1, $a2, ...) -> $something
+ * @return callable with signature $a1 -> ($a2 -> (... -> $something))
  */
 function curry(callable $f): callable
 {
