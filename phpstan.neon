@@ -2,6 +2,8 @@ parameters:
     ignoreErrors:
         - message: '#Construct empty()#'
           path: src/Basic/NonEmpty.php
+        - message: '#PHPDoc tag @param#'
+          path: src/Result/functions.php
 
 includes:
 	- vendor/phpstan/phpstan-strict-rules/rules.neon

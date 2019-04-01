@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSL\Result;
 use Closure;
 use function Marcosh\PhpValidationDSL\curry;
 use ReflectionFunction;
+use Webmozart\Assert\Assert;
 
 /**
  * @param callable $f with signature (T1 $a1, T2 $a2, ...) ->  T
@@ -27,6 +28,8 @@ function lift(callable $f): callable
         }
 
         return static function () use ($f, $numberOfParameters, $parameters, $innerLift) {
+            // collect all necessary parameters
+
             /** @var array<int, mixed> $newParameters */
             $newParameters = array_merge($parameters, func_get_args());
 
@@ -53,6 +56,20 @@ function lift(callable $f): callable
     return $innerLift($f);
 }
 
-function do_(): callable
+/**
+ * @param callable[] $fs every function takes as arguments the unwrapped results of the previous one and returns a
+ *                      ValidationResult
+ * @return ValidationResult
+ */
+function do_(callable ...$fs): ValidationResult
 {
+    Assert::notEmpty($fs, 'do_ must receive at least one callable');
+
+    $result = ValidationResult::valid(null);
+
+    foreach ($fs as $f) {
+        $result = $result->bind($f);
+    }
+
+    return $result;
 }
