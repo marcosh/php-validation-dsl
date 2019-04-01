@@ -7,6 +7,8 @@ namespace Marcosh\PhpValidationDSLSpec\Example;
 use Marcosh\PhpValidationDSL\Basic\IsGreaterThan;
 use Marcosh\PhpValidationDSL\Basic\Regex;
 use Marcosh\PhpValidationDSL\Equality;
+use function Marcosh\PhpValidationDSL\Result\do_;
+use function Marcosh\PhpValidationDSL\Result\lift;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
 /**
@@ -134,6 +136,23 @@ class CustomerInfo implements Equality
     }
 
     /**
+     * we can rewrite buildValidApplicative using the lift function
+     *
+     * @param int $id
+     * @param string $email
+     * @return ValidationResult containing a CustomerInfo
+     */
+    public static function buildValidApplicativeWithLift(int $id, string $email): ValidationResult
+    {
+        $idResult = CustomerId::buildValid($id);
+        $emailResult = EmailAddress::buildValid($email);
+
+        return lift(static function (CustomerId $id, EmailAddress $emailAddress) {
+            return new self($id, $emailAddress);
+        })($idResult, $emailResult);
+    }
+
+    /**
      * @param int $id
      * @param string $email
      * @return ValidationResult containing a CustomerInfo
@@ -148,6 +167,36 @@ class CustomerInfo implements Equality
                 return ValidationResult::valid(new self($id, $email));
             });
         });
+    }
+
+    /**
+     * we can rewrite tbuildValidMonadic using the do_ function
+     *
+     * @param int $id
+     * @param string $email
+     * @return ValidationResult
+     */
+    public static function buildValidMonadicWithDo(int $id, string $email): ValidationResult
+    {
+        return do_(
+            static function () use ($id) {
+                return CustomerId::buildValid($id);
+            },
+            static function (CustomerId $customerId) use ($email) {
+                return EmailAddress::buildValid($email)->map(static function ($email) use ($customerId) {
+                    return [
+                        'id' => $customerId,
+                        'email' => $email
+                    ];
+                });
+            },
+            static function (array $args) {
+                return ValidationResult::valid(new self(
+                    $args['id'],
+                    $args['email']
+                ));
+            }
+        );
     }
 
     public function id(): CustomerId
@@ -202,6 +251,40 @@ describe('applicative style', function () {
     });
 });
 
+describe('applicative style with lift', function () {
+    it('validates correctly a customer with correct id and email', function () {
+        expect(
+            CustomerInfo::buildValidApplicativeWithLift(42, 'gigi@zucon.it')->equals(
+                ValidationResult::valid(new CustomerInfo(new CustomerId(42), new EmailAddress('gigi@zucon.it')))
+            )
+        )->toBeTruthy();
+    });
+
+    it('returns the correct error if the id is negative' , function () {
+        expect(
+            CustomerInfo::buildValidApplicativeWithLift(-42, 'gigi@zucon.it')->equals(
+                ValidationResult::errors([IsGreaterThan::MESSAGE])
+            )
+        )->toBeTruthy();
+    });
+
+    it('returns the correct error if the email is not valid', function () {
+        expect(
+            CustomerInfo::buildValidApplicativeWithLift(42, 'gigi')->equals(
+                ValidationResult::errors([Regex::MESSAGE])
+            )
+        )->toBeTruthy();
+    });
+
+    it('returns the correct error messages if both is and email are not valid', function () {
+        expect(
+            CustomerInfo::buildValidApplicativeWithLift(-42, 'gigi')->equals(
+                ValidationResult::errors([IsGreaterThan::MESSAGE, Regex::MESSAGE])
+            )
+        )->toBeTruthy();
+    });
+});
+
 describe('monadic style', function () {
     it('validates correctly a customer with correct id and email', function () {
         expect(
@@ -230,6 +313,40 @@ describe('monadic style', function () {
     it('returns the correct error messages if both is and email are not valid', function () {
         expect(
             CustomerInfo::buildValidMonadic(-42, 'gigi')->equals(
+                ValidationResult::errors([IsGreaterThan::MESSAGE])
+            )
+        )->toBeTruthy();
+    });
+});
+
+describe('monadic style with do_', function () {
+    it('validates correctly a customer with correct id and email', function () {
+        expect(
+            CustomerInfo::buildValidMonadicWithDo(42, 'gigi@zucon.it')->equals(
+                ValidationResult::valid(new CustomerInfo(new CustomerId(42), new EmailAddress('gigi@zucon.it')))
+            )
+        )->toBeTruthy();
+    });
+
+    it('returns the correct error if the id is negative' , function () {
+        expect(
+            CustomerInfo::buildValidMonadicWithDo(-42, 'gigi@zucon.it')->equals(
+                ValidationResult::errors([IsGreaterThan::MESSAGE])
+            )
+        )->toBeTruthy();
+    });
+
+    it('returns the correct error if the email is not valid', function () {
+        expect(
+            CustomerInfo::buildValidMonadicWithDo(42, 'gigi')->equals(
+                ValidationResult::errors([Regex::MESSAGE])
+            )
+        )->toBeTruthy();
+    });
+
+    it('returns the correct error messages if both is and email are not valid', function () {
+        expect(
+            CustomerInfo::buildValidMonadicWithDo(-42, 'gigi')->equals(
                 ValidationResult::errors([IsGreaterThan::MESSAGE])
             )
         )->toBeTruthy();
