@@ -16,7 +16,7 @@ final class EveryElement implements Validation
     private $elementValidation;
 
     /**
-     * @var callable : $key -> $resultMessages -> $validationMessages -> array
+     * @var callable with signature $key -> $resultMessages -> $validationMessages -> array
      */
     private $errorFormatter;
 
@@ -25,7 +25,15 @@ final class EveryElement implements Validation
         $this->elementValidation = $validation;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function ($key, $resultMessages, $validationMessages) {
+            /**
+             * @template K
+             * @template V
+             * @psalm-param K $key
+             * @param array<K, V> $resultMessages
+             * @param array $validationMessages
+             * @return array<K, V>
+             */
+            function ($key, array $resultMessages, array $validationMessages): array {
                 $resultMessages[$key] = $validationMessages;
 
                 return $resultMessages;
@@ -56,10 +64,17 @@ final class EveryElement implements Validation
         foreach ($data as $key => $element) {
             $result = $result->join(
                 $this->elementValidation->validate($data[$key], $context),
+                /**
+                 * @template T
+                 * @template U
+                 * @psalm-param T $a
+                 * @psalm-param U $b
+                 * @return T
+                 */
                 function ($a, $b) {
                     return $a;
                 },
-                function ($resultMessages, $validationMessages) use ($key, $errorFormatter) {
+                function (array $resultMessages, array $validationMessages) use ($key, $errorFormatter): array {
                     return $errorFormatter($key, $resultMessages, $validationMessages);
                 }
             );

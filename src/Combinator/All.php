@@ -65,6 +65,13 @@ final class All implements Validation
         foreach ($this->validations as $validation) {
             $result = $result->join(
                 $validation->validate($data, $context),
+                /**
+                 * @template T
+                 * @template U
+                 * @psalm-param T $a
+                 * @psalm-param U $b
+                 * @return T
+                 */
                 function ($a, $b) {
                     return $a;
                 },

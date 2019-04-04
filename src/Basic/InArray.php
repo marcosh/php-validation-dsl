@@ -29,7 +29,15 @@ final class InArray implements Validation
         $this->values = $values;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function ($values, $data) {
+            /**
+             * @template T
+             * @param array $values
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (array $values, $data): array {
                 return [self::NOT_IN_ARRAY];
             };
     }
@@ -48,7 +56,15 @@ final class InArray implements Validation
     {
         return new self(
             $values,
-            function (array $values, $data) use ($translator) {
+            /**
+             * @template T
+             * @param array $values
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (array $values, $data) use ($translator): array {
                 return [$translator->translate(self::NOT_IN_ARRAY)];
             }
         );

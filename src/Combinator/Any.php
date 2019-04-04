@@ -35,7 +35,12 @@ final class Any implements Validation
         $this->validations = $validations;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function (array $messages) {
+            /**
+             * @return array[]
+             *
+             * @psalm-return array<string, array>
+             */
+            function (array $messages): array {
                 return [
                     self::NOT_EVEN_ONE => $messages
                 ];
@@ -65,7 +70,12 @@ final class Any implements Validation
     {
         return new self(
             $validations,
-            function (array $messages) use ($translator) {
+            /**
+             * @return array[]
+             *
+             * @psalm-return array<string, array>
+             */
+            function (array $messages) use ($translator): array {
                 return [
                     $translator->translate(self::NOT_EVEN_ONE) => $messages
                 ];
@@ -73,6 +83,13 @@ final class Any implements Validation
         );
     }
 
+    /**
+     * @template T
+     * @psalm-param T $data
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     public function validate($data, array $context = []): ValidationResult
     {
         $result = ValidationResult::errors([]);
@@ -83,8 +100,13 @@ final class Any implements Validation
 
         return $result
             ->mapErrors($this->errorFormatter)
-            ->map(function () use ($data) {
-                return $data;
-            });
+            ->map(
+                /**
+                 * @return T
+                 */
+                function () use ($data) {
+                    return $data;
+                }
+            );
     }
 }

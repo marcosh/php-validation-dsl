@@ -42,12 +42,13 @@ final class Sequence implements Validation
     {
         return array_reduce(
             $this->validations,
-            function (ValidationResult $carry, Validation $validation) use ($context) {
+            function (ValidationResult $carry, Validation $validation) use ($context): ValidationResult {
                 return $carry->process(
-                    function ($validData) use ($validation, $context) {
+                    /** @psalm-suppress MissingClosureParamType */
+                    function ($validData) use ($validation, $context): ValidationResult {
                         return $validation->validate($validData, $context);
                     },
-                    function () use ($carry) {
+                    function () use ($carry): ValidationResult {
                         return $carry;
                     }
                 );

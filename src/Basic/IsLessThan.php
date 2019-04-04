@@ -12,10 +12,21 @@ final class IsLessThan extends Bound implements Validation
 {
     public const MESSAGE = 'is-less-than.not-less-than';
 
+    /**
+     * @template T
+     * @psalm-param T $data
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     public function validate($data, array $context = []): ValidationResult
     {
         return $this->validateAssertion(
-            function ($bound, $data) {
+            /**
+             * @psalm-param T $bound
+             * @psalm-param T $data
+             */
+            function ($bound, $data): bool {
                 return $data < $bound;
             },
             $data,

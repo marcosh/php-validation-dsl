@@ -28,7 +28,14 @@ final class IsAsAsserted implements Validation
         $this->assertion = $assertion;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function ($data) {
+            /**
+             * @template T
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function ($data): array {
                 return [self::NOT_AS_ASSERTED];
             };
     }
@@ -47,7 +54,14 @@ final class IsAsAsserted implements Validation
     {
         return new self(
             $assertion,
-            function ($data) use ($translator) {
+            /**
+             * @template T
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function ($data) use ($translator): array {
                 return [$translator->translate(self::NOT_AS_ASSERTED)];
             }
         );

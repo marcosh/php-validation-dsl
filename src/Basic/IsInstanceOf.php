@@ -28,7 +28,15 @@ final class IsInstanceOf implements Validation
         $this->className = $className;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function (string $className, $data) {
+            /**
+             * @template T
+             * @param string $className
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (string $className, $data): array {
                 return [self::NOT_AN_INSTANCE];
             };
     }
@@ -47,7 +55,15 @@ final class IsInstanceOf implements Validation
     {
         return new self(
             $className,
-            function (string $className, $data) use ($translator) {
+            /**
+             * @template T
+             * @param string $className
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (string $className, $data) use ($translator): array {
                 return [$translator->translate(self::NOT_AN_INSTANCE)];
             }
         );

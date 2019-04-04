@@ -42,16 +42,24 @@ final class TranslateErrors implements Validation
     {
         $translator = $this->translator;
 
-        return array_map(function ($message) use ($translator) {
-            if (is_string($message)) {
-                return $translator->translate($message);
-            }
+        return array_map(
+            /**
+             * @template T
+             * @psalm-param T $message
+             * @return T
+             */
+            function ($message) use ($translator) {
+                if (is_string($message)) {
+                    return $translator->translate($message);
+                }
 
-            if (is_array($message)) {
-                return $this->translateNestedErrors($message);
-            }
+                if (is_array($message)) {
+                    return $this->translateNestedErrors($message);
+                }
 
-            return $message;
-        }, $messages);
+                return $message;
+            },
+            $messages
+        );
     }
 }

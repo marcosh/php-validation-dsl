@@ -28,7 +28,15 @@ final class HasNotKey implements Validation
         $this->key = $key;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function (string $key, $data) {
+            /**
+             * @template T
+             * @param string $key
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (string $key, $data): array {
                 return [self::PRESENT_KEY];
             };
     }
@@ -47,7 +55,15 @@ final class HasNotKey implements Validation
     {
         return new self(
             $key,
-            function (string $key, $data) use ($translator) {
+            /**
+             * @template T
+             * @param string $key
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (string $key, $data) use ($translator): array {
                 return [$translator->translate(self::PRESENT_KEY)];
             }
         );

@@ -8,6 +8,9 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use function is_callable;
 
+/**
+ * @template T
+ */
 abstract class ComposingAssertion
 {
     public const MESSAGE = 'composing-assertion.not-as-asserted';
@@ -29,13 +32,22 @@ abstract class ComposingAssertion
 
     public static function withTranslator(Translator $translator): self
     {
-        return new static(function ($data) use ($translator) {
-            return [$translator->translate(static::MESSAGE)];
-        });
+        return new static(
+            /**
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:mixed}
+             */
+            function ($data) use ($translator): array {
+                return [$translator->translate(static::MESSAGE)];
+            }
+        );
     }
 
     /**
      * @param mixed $data
+     * @psalm-param T $data
      * @param array $context
      * @return ValidationResult
      */
@@ -44,6 +56,7 @@ abstract class ComposingAssertion
     /**
      * @param callable $assertion
      * @param mixed $data
+     * @psalm-param T $data
      * @param array $context
      * @return ValidationResult
      */
@@ -53,7 +66,13 @@ abstract class ComposingAssertion
             $assertion,
             is_callable($this->errorFormatter) ?
                 $this->errorFormatter :
-                function ($data) {
+                /**
+                 * @param mixed $data
+                 * @psalm-param T $data
+                 * @return string[]
+                 * @psalm-return array{0:mixed}
+                 */
+                function ($data): array {
                     return [static::MESSAGE];
                 }
         )->validate($data, $context);

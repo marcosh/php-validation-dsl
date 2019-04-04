@@ -40,11 +40,23 @@ final class Focus implements Validation
         return new self($focus, $validation);
     }
 
+    /**
+     * @template T
+     * @psalm-param T $data
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     public function validate($data, array $context = []): ValidationResult
     {
         return $this->validation->validate(($this->focus)($data), $context)
-            ->map(function () use ($data) {
-                return $data;
-            });
+            ->map(
+                /**
+                 * @return T
+                 */
+                function () use ($data) {
+                    return $data;
+                }
+            );
     }
 }

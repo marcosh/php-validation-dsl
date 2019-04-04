@@ -11,11 +11,24 @@ final class Errors extends ComposingAssertion implements Validation
 {
     public const MESSAGE = 'errors.invalid-data';
 
+    /**
+     * @template T
+     * @psalm-param T $data
+     * @param mixed $data
+     * @param array $context
+     * @return ValidationResult
+     */
     public function validate($data, array $context = []): ValidationResult
     {
-        $alwaysFalse = function ($data) {
-            return false;
-        };
+        $alwaysFalse =
+            /**
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return false
+             */
+            function ($data): bool {
+                return false;
+            };
 
         return $this->validateAssertion($alwaysFalse, $data, $context);
     }

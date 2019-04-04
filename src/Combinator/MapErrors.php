@@ -15,7 +15,7 @@ final class MapErrors implements Validation
     private $validation;
 
     /**
-     * @var callable: $messages -> $messages
+     * @var callable with signature $messages -> $messages
      */
     private $function;
 

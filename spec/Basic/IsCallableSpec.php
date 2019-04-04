@@ -10,8 +10,8 @@ use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 class CallableFoo
 {
-    public static function bar() {}
-    public function baz() {}
+    public static function bar(): void {}
+    public function baz(): void {}
 }
 
 describe('IsCallable', function () {

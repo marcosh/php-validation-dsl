@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Basic;
 
+use Closure;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 
+/**
+ * @template B
+ */
 abstract class Bound
 {
     public const MESSAGE = 'composing-bound.not-respecting-bound';
@@ -21,6 +25,7 @@ abstract class Bound
 
     /**
      * @param mixed $bound
+     * @psalm-param B $bound
      * @param callable $errorFormatter
      */
     private function __construct($bound, callable $errorFormatter)
@@ -30,6 +35,7 @@ abstract class Bound
     }
 
     /**
+     * @psalm-param B $bound
      * @param mixed $bound
      * @return Bound
      */
@@ -37,7 +43,16 @@ abstract class Bound
     {
         return self::withBoundAndFormatter(
             $bound,
-            function ($bound, $data) {
+            /**
+             * @param mixed $bound
+             * @psalm-param B $bound
+             * @param mixed $data
+             * @psalm-param B $data
+             * @return string[]
+             * @psalm-return array{0:mixed}
+             */
+            function ($bound, $data): array {
+
                 return [static::MESSAGE];
             }
         );
@@ -45,6 +60,7 @@ abstract class Bound
 
     /**
      * @param mixed $bound
+     * @psalm-param B $bound
      * @param callable $errorFormatter
      * @return Bound
      */
@@ -55,6 +71,7 @@ abstract class Bound
 
     /**
      * @param mixed $bound
+     * @psalm-param B $bound
      * @param Translator $translator
      * @return Bound
      */
@@ -62,7 +79,15 @@ abstract class Bound
     {
         return self::withBoundAndFormatter(
             $bound,
-            function ($bound, $data) use ($translator) {
+            /**
+             * @param mixed $bound
+             * @psalm-param B $bound
+             * @param mixed $data
+             * @psalm-param B $data
+             * @return string[]
+             * @psalm-return array{0:mixed}
+             */
+            function ($bound, $data) use ($translator): array {
                 return [$translator->translate(static::MESSAGE)];
             }
         );
@@ -77,7 +102,9 @@ abstract class Bound
 
     /**
      * @param callable $assertion
+     * @psalm-param Closure(B, B): bool $assertion
      * @param mixed $data
+     * @psalm-param B $data
      * @param array $context
      * @return ValidationResult
      */
@@ -87,10 +114,18 @@ abstract class Bound
         $errorFormatter = $this->errorFormatter;
 
         return IsAsAsserted::withAssertionAndErrorFormatter(
-            function ($data) use ($bound, $assertion) {
+            /**
+             * @param mixed $data
+             * @psalm-param B $data
+             */
+            function ($data) use ($bound, $assertion): bool {
                 return $assertion($bound, $data);
             },
-            function ($data) use ($bound, $errorFormatter) {
+            /**
+             * @param mixed $data
+             * @psalm-param B $data
+             */
+            function ($data) use ($bound, $errorFormatter): array {
                 return $errorFormatter($bound, $data);
             }
         )->validate($data, $context);

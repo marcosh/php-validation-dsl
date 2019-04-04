@@ -29,7 +29,15 @@ final class Regex implements Validation
         $this->pattern = $pattern;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function (string $pattern, $data) {
+            /**
+             * @template T
+             * @param string $pattern
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (string $pattern, $data): array {
                 return [self::MESSAGE];
             };
     }
@@ -48,7 +56,15 @@ final class Regex implements Validation
     {
         return new self(
             $pattern,
-            function (string $pattern, $data) use ($translator) {
+            /**
+             * @template T
+             * @param string $pattern
+             * @param mixed $data
+             * @psalm-param T $data
+             * @return string[]
+             * @psalm-return array{0:string}
+             */
+            function (string $pattern, $data) use ($translator): array {
                 return [$translator->translate(self::MESSAGE)];
             }
         );

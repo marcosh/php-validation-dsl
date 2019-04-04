@@ -97,10 +97,11 @@ final class ValidationResult
     public function map(callable $map): self
     {
         return $this->process(
-            function ($validContent) use ($map) {
+            /** @param mixed $validContent */
+            function ($validContent) use ($map): self {
                 return self::valid($map($validContent));
             },
-            function ($messages) {
+            function (array $messages): self {
                 return self::errors($messages);
             }
         );
@@ -109,10 +110,11 @@ final class ValidationResult
     public function mapErrors(callable $map): self
     {
         return $this->process(
-            function ($validContent) {
+            /** @param mixed $validContent */
+            function ($validContent): self {
                 return self::valid($validContent);
             },
-            function (array $messages) use ($map) {
+            function (array $messages) use ($map): self {
                 return self::errors($map($messages));
             }
         );
@@ -125,15 +127,17 @@ final class ValidationResult
     public function apply(ValidationResult $apply): self
     {
         return $apply->process(
-            function (callable $validApply) {
+            function (callable $validApply): self {
                 return $this->map($validApply);
             },
+            /** @return mixed */
             function (array $applyMessages) {
                 return $this->process(
-                    function ($validContent) use ($applyMessages) {
+                    /** @param mixed $validContent */
+                    function ($validContent) use ($applyMessages): self {
                         return self::errors($applyMessages);
                     },
-                    function (array $messages) use ($applyMessages) {
+                    function (array $messages) use ($applyMessages): self {
                         return self::errors(array_merge($applyMessages, $messages));
                     }
                 );
@@ -148,10 +152,11 @@ final class ValidationResult
     public function bind(callable $bind): self
     {
         return $this->process(
-            function ($validContent) use ($bind) {
+            /** @param mixed $validContent */
+            function ($validContent) use ($bind): self {
                 return $bind($validContent);
             },
-            function (array $messages) {
+            function (array $messages): self {
                 return self::errors($messages);
             }
         );

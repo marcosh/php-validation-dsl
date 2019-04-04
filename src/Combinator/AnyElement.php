@@ -16,7 +16,7 @@ final class AnyElement implements Validation
     private $elementValidation;
 
     /**
-     * @var callable : $key -> $resultMessages -> $validationMessages -> array
+     * @var callable with signature $key -> $resultMessages -> $validationMessages -> array
      */
     private $errorFormatter;
 
@@ -25,7 +25,15 @@ final class AnyElement implements Validation
         $this->elementValidation = $validation;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
-            function ($key, $resultMessages, $validationMessages) {
+            /**
+             * @template K
+             * @template V
+             * @psalm-param K $key
+             * @param array<K, V> $resultMessages
+             * @param array $validationMessages
+             * @return array<K, V>
+             */
+            function ($key, array $resultMessages, array $validationMessages): array {
                 $resultMessages[$key] = $validationMessages;
 
                 return $resultMessages;
@@ -43,6 +51,8 @@ final class AnyElement implements Validation
     }
 
     /**
+     * @template T
+     * @psalm-param T $data
      * @param mixed $data should receive an array; the type hint is mixed because of contravariance
      * @param array $context
      * @return ValidationResult
@@ -56,14 +66,22 @@ final class AnyElement implements Validation
         foreach ($data as $key => $element) {
             $result = $result->meet(
                 $this->elementValidation->validate($data[$key], $context),
-                function ($resultMessages, $validationMessages) use ($key, $errorFormatter) {
+                /**
+                 * @return array
+                 */
+                function (array $resultMessages, array $validationMessages) use ($key, $errorFormatter) {
                     return $errorFormatter($key, $resultMessages, $validationMessages);
                 }
             );
         }
 
-        return $result->map(function () use ($data) {
-            return $data;
-        });
+        return $result->map(
+            /**
+             * @return T
+             */
+            function () use ($data) {
+                return $data;
+            }
+        );
     }
 }

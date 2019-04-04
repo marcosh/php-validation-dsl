@@ -11,47 +11,57 @@ use Webmozart\Assert\Assert;
 
 /**
  * @param callable $f with signature (T1 $a1, T2 $a2, ...) ->  T
- * @return callable with signature (ValidationResult T1, ValidationResult T2, ...) -> ValidationResult T
+ * @return Closure with signature (ValidationResult T1, ValidationResult T2, ...) -> ValidationResult T
+ *
+ * @psalm-return Closure(): ValidationResult
  */
-function lift(callable $f): callable
+function lift(callable $f): Closure
 {
-    $innerLift = static function (
-        callable $f,
-        ?int $numberOfParameters = null,
-        array $parameters = []
-    ) use (&$innerLift): callable {
-        if (null === $numberOfParameters) {
-            // retrieve number of parameters from reflection
-            $fClosure = Closure::fromCallable($f);
-            $fRef = new ReflectionFunction($fClosure);
-            $numberOfParameters = $fRef->getNumberOfParameters();
-        }
-
-        return static function () use ($f, $numberOfParameters, $parameters, $innerLift) {
-            // collect all necessary parameters
-
-            /** @var array<int, mixed> $newParameters */
-            $newParameters = array_merge($parameters, func_get_args());
-
-            if (count($newParameters) >= $numberOfParameters) {
-                if ([] === $newParameters) {
-                    return ValidationResult::valid($f());
-                }
-
-                $firstParameter = $newParameters[0];
-
-                $result = $firstParameter->map(curry($f));
-
-                foreach (array_slice($newParameters, 1) as $validatedParameter) {
-                    $result = $validatedParameter->apply($result);
-                }
-
-                return $result;
+    $innerLift =
+        /**
+         * @return Closure
+         *
+         * @psalm-return Closure(): ValidationResult
+         */
+        static function (
+            callable $f,
+            ?int $numberOfParameters = null,
+            array $parameters = []
+        ) use (&$innerLift): Closure {
+            if (null === $numberOfParameters) {
+                // retrieve number of parameters from reflection
+                $fClosure = Closure::fromCallable($f);
+                $fRef = new ReflectionFunction($fClosure);
+                $numberOfParameters = $fRef->getNumberOfParameters();
             }
 
-            return $innerLift($f, $numberOfParameters, $newParameters);
+            /** @return ValidationResult|Closure */
+            /** @psalm-suppress MissingClosureReturnType */
+            return static function () use ($f, $numberOfParameters, $parameters, $innerLift) {
+                // collect all necessary parameters
+
+                /** @var array<int, mixed> $newParameters */
+                $newParameters = array_merge($parameters, func_get_args());
+
+                if (count($newParameters) >= $numberOfParameters) {
+                    if ([] === $newParameters) {
+                        return ValidationResult::valid($f());
+                    }
+
+                    $firstParameter = $newParameters[0];
+
+                    $result = $firstParameter->map(curry($f));
+
+                    foreach (array_slice($newParameters, 1) as $validatedParameter) {
+                        $result = $validatedParameter->apply($result);
+                    }
+
+                    return $result;
+                }
+
+                return $innerLift($f, $numberOfParameters, $newParameters);
+            };
         };
-    };
 
     return $innerLift($f);
 }
