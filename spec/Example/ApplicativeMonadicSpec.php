@@ -7,9 +7,9 @@ namespace Marcosh\PhpValidationDSLSpec\Example;
 use Marcosh\PhpValidationDSL\Basic\IsGreaterThan;
 use Marcosh\PhpValidationDSL\Basic\Regex;
 use Marcosh\PhpValidationDSL\Equality;
-use function Marcosh\PhpValidationDSL\Result\sdo;
-use function Marcosh\PhpValidationDSL\Result\lift;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+use function Marcosh\PhpValidationDSL\Result\lift;
+use function Marcosh\PhpValidationDSL\Result\mdo;
 
 /**
  * @param callable $f : ($a, $b) -> something
@@ -178,23 +178,15 @@ class CustomerInfo implements Equality
      */
     public static function buildValidMonadicWithDo(int $id, string $email): ValidationResult
     {
-        return sdo(
+        return mdo(
             static function () use ($id) {
                 return CustomerId::buildValid($id);
             },
-            static function (CustomerId $customerId) use ($email) {
-                return EmailAddress::buildValid($email)->map(static function ($email) use ($customerId) {
-                    return [
-                        'id' => $customerId,
-                        'email' => $email
-                    ];
-                });
+            static function () use ($email) {
+                return EmailAddress::buildValid($email);
             },
-            static function (array $args) {
-                return ValidationResult::valid(new self(
-                    $args['id'],
-                    $args['email']
-                ));
+            static function ($id, $email) {
+                return ValidationResult::valid(new self ($id, $email));
             }
         );
     }
