@@ -9,7 +9,7 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 
-final class IsGreaterThan extends Bound implements Validation
+final class IsGreaterThan extends Compare implements Validation
 {
     public const MESSAGE = 'is-greater-than.not-greater-than';
 
