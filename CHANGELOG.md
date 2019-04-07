@@ -5,10 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0]
 
 - added `Valid` validator
 - added `Errors` validator
+- added `IsGreaterThan` and `IsLessThan` validators
+- added `Apply` combinator
+- added `Bind` combinator
+- added `composer-require-check`, `phpcs`, `phpstan` and `psalm` to `CI`
+- use `MESSAGE` constant in all validators
+- use `phpstan` strict rules
+- use `psalm`
+- add `Equality` interface to check object equality
+- add `curry` and `uncurry` functions
+- add `lift`, `sdo` and `mdo` functions
 
 ## [0.2.3] - 2018-12-05
 
