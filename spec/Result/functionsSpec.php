@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace  Marcosh\PhpValidationDSLSpec\Result;
 
-use function Marcosh\PhpValidationDSL\Result\do_;
+use function Marcosh\PhpValidationDSL\Result\sdo;
+use function Marcosh\PhpValidationDSL\Result\mdo;
 use function Marcosh\PhpValidationDSL\Result\lift;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
@@ -169,7 +170,7 @@ describe('lift function', function () {
 
 describe('do_ function', function () {
     it('sums two numbers', function () {
-        $sumResult = do_(
+        $sumResult = sdo(
             static function () {return ValidationResult::valid(42);},
             static function ($arg) {return ValidationResult::valid(['first' => $arg, 'second' => 23]);},
             static function ($args) {return ValidationResult::valid($args['first'] + $args['second']);}
@@ -179,7 +180,7 @@ describe('do_ function', function () {
     });
 
     it('fails if the first operation fails', function () {
-        $sumResult = do_(
+        $sumResult = sdo(
             static function () {return ValidationResult::errors(['nope']);},
             static function ($arg) {return ValidationResult::valid(['first' => $arg, 'second' => 23]);},
             static function ($args) {return ValidationResult::valid($args['first'] + $args['second']);}
@@ -189,7 +190,7 @@ describe('do_ function', function () {
     });
 
     it('fails if the second operation fails', function () {
-        $sumResult = do_(
+        $sumResult = sdo(
             static function () {return ValidationResult::valid(42);},
             static function () {return ValidationResult::errors(['nope']);},
             static function ($args) {return ValidationResult::valid($args['first'] + $args['second']);}
@@ -199,10 +200,52 @@ describe('do_ function', function () {
     });
 
     it('fails if both operation fails with just the first error', function () {
-        $sumResult = do_(
+        $sumResult = sdo(
             static function () {return ValidationResult::errors(['nope1']);},
             static function () {return ValidationResult::errors(['nope2']);},
             static function ($args) {return ValidationResult::valid($args['first'] + $args['second']);}
+        );
+
+        expect($sumResult->equals(ValidationResult::errors(['nope1'])))->toBeTruthy();
+    });
+});
+
+describe('do__ function', function () {
+    it('sums two numbers', function () {
+        $sumResult = mdo(
+            static function () {return ValidationResult::valid(42);},
+            static function () {return ValidationResult::valid(23);},
+            static function ($arg1, $arg2) {return ValidationResult::valid($arg1 + $arg2);}
+        );
+
+        expect($sumResult->equals(ValidationResult::valid(65)))->toBeTruthy();
+    });
+
+    it('fails if the first operation fails', function () {
+        $sumResult = mdo(
+            static function () {return ValidationResult::errors(['nope']);},
+            static function () {return ValidationResult::valid(23);},
+            static function ($arg1, $arg2) {return ValidationResult::valid($arg1 + $arg2);}
+        );
+
+        expect($sumResult->equals(ValidationResult::errors(['nope'])))->toBeTruthy();
+    });
+
+    it('fails if the second operation fails', function () {
+        $sumResult = mdo(
+            static function () {return ValidationResult::valid(42);},
+            static function () {return ValidationResult::errors(['nope']);},
+            static function ($arg1, $arg2) {return ValidationResult::valid($arg1 + $arg2);}
+        );
+
+        expect($sumResult->equals(ValidationResult::errors(['nope'])))->toBeTruthy();
+    });
+
+    it('fails if both operation fails with just the first error', function () {
+        $sumResult = mdo(
+            static function () {return ValidationResult::errors(['nope1']);},
+            static function () {return ValidationResult::errors(['nope2']);},
+            static function ($arg1, $arg2) {return ValidationResult::valid($arg1 + $arg2);}
         );
 
         expect($sumResult->equals(ValidationResult::errors(['nope1'])))->toBeTruthy();
