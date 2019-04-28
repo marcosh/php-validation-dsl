@@ -27,7 +27,7 @@ function curry(callable $f): Closure
             callable $f,
             ?int $numberOfParameters = null,
             array $parameters = []
-        ) use (&$innerCurry): Closure {
+        ) use (&$innerCurry) : Closure {
             if (null === $numberOfParameters) {
                 // retrieve number of parameters from reflection
                 $fClosure = Closure::fromCallable($f);
@@ -60,7 +60,7 @@ function curry(callable $f): Closure
 function uncurry(callable $f): Closure
 {
     /**
-     * @param array $params
+     * @psalm-suppress MissingClosureParamType
      * @psalm-suppress MissingClosureReturnType
      */
     return static function (...$params) use ($f) {
