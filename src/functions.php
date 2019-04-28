@@ -59,7 +59,10 @@ function curry(callable $f): Closure
  */
 function uncurry(callable $f): Closure
 {
-    /** @psalm-suppress MissingClosureReturnType */
+    /**
+     * @param array $params
+     * @psalm-suppress MissingClosureReturnType
+     */
     return static function (...$params) use ($f) {
         if ([] === $params) {
             return $f();
