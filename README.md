@@ -216,7 +216,7 @@ To describe what we would like to check in plain text, we need to verify that:
 
 - the data we receive are an array
 - we have a `name` field and it should be a non-empty string
-- we have an `age` field and it should be a non-negative integer
+- we have an `age` field and it should be a positive integer
 
 The validator which does this check should look like:
 
@@ -244,9 +244,7 @@ Sequence::validations([
                 },
                 Sequence::validations([
                     new IsInteger(),
-                    IsAsAsserted::withAssertion(function ($data) {
-                        return $data >= 0;
-                    })
+                    IsGreaterThan::withBound(0)
                 ])
             )
         ])
@@ -281,9 +279,25 @@ check if it is an integer with the `IsInteger` validator and we use the
 `IsAsAsserted` validator, built with a user defined callable, to check that the
 value is a positive integer.
 
-This example shows the basic usage of the library. In the next paragraphs we
-will see how to customize its behaviour and how to use more advanced
-functionalities.
+This example explains how to use several combinators to create complex
+validators. Actually, the specific validator we are considering here could be
+written more simply as
+
+```php
+Associative::validations([
+    'name' => Sequence::validations([
+        new IsString(),
+        new NonEmpty()
+    ]),
+    'age' => Sequence::validations([
+        new IsInteger(),
+        IsGreaterThan::withBound(0)
+    ])
+]);
+```
+
+removing a lot of boilerplate form the client code and allowing to concentrate
+on what is specific for the validation at hand.
 
 ## Applicative and monadic validation
 
