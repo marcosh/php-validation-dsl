@@ -7,9 +7,6 @@ namespace Marcosh\PhpValidationDSL\Basic;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 
-/**
- * @template B
- */
 abstract class Compare
 {
     public const MESSAGE = 'composing-bound.not-respecting-bound';
@@ -17,12 +14,11 @@ abstract class Compare
     /** @var mixed could be any comparable type */
     protected $comparisonBasis;
 
-    /**
-     * @var callable with signature $comparisonBasis -> $data -> string[]
-     */
+    /** @var callable with signature $comparisonBasis -> $data -> string[] */
     private $errorFormatter;
 
     /**
+     * @psalm-template B
      * @param mixed $comparisonBasis
      * @psalm-param B $comparisonBasis
      * @param callable $errorFormatter
@@ -34,6 +30,7 @@ abstract class Compare
     }
 
     /**
+     * @psalm-template B
      * @psalm-param B $comparisonBasis
      * @param mixed $comparisonBasis
      * @return Compare
@@ -51,13 +48,13 @@ abstract class Compare
              * @psalm-return array{0:mixed}
              */
             function ($comparisonBasis, $data): array {
-
                 return [static::MESSAGE];
             }
         );
     }
 
     /**
+     * @psalm-template B
      * @param mixed $comparisonBasis
      * @psalm-param B $comparisonBasis
      * @param callable $errorFormatter
@@ -65,10 +62,12 @@ abstract class Compare
      */
     public static function withBoundAndFormatter($comparisonBasis, callable $errorFormatter): self
     {
+        /** @psalm-suppress UnsafeInstantiation */
         return new static($comparisonBasis, $errorFormatter);
     }
 
     /**
+     * @psalm-template B
      * @param mixed $comparisonBasis
      * @psalm-param B $comparisonBasis
      * @param Translator $translator
@@ -100,6 +99,7 @@ abstract class Compare
     abstract public function validate($data, array $context = []): ValidationResult;
 
     /**
+     * @psalm-template B
      * @param callable $assertion
      * @psalm-param callable(B, B):bool $assertion
      * @param mixed $data

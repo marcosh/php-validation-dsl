@@ -1,9 +1,14 @@
 parameters:
+    checkMissingIterableValueType: false
     ignoreErrors:
-        - message: '#Construct empty()#'
+        - message: '#Construct empty\(\)#'
           path: src/Basic/NonEmpty.php
         - message: '#PHPDoc tag @param#'
           path: src/Result/functions.php
+        - message: '#Unsafe usage of new static\(\)#'
+          path: src/Basic/Compare.php
+        - message: '#Unsafe usage of new static\(\)#'
+          path: src/Basic/ComposingAssertion.php
 
 includes:
 	- vendor/phpstan/phpstan-strict-rules/rules.neon

@@ -9,6 +9,8 @@ matrix:
       env:
         - COVERAGE=1
     - php: 7.3
+    - php: 7.4
+    - php: 8.0
 
 install:
   - if [ $COVERAGE = "1" ]; then composer require --dev satooshi/php-coveralls; fi
@@ -21,7 +23,8 @@ script:
   - vendor/bin/phpcs --standard=PSR2 src
   - vendor/bin/phpstan analyze src -l max
   - vendor/bin/psalm
-  - vendor/bin/composer-require-checker check --config-file crc-config.json
+  # FIXME: can be enabled once maglnet/composer-require-checker is available on PHP 8.0
+  # - vendor/bin/composer-require-checker check --config-file crc-config.json
   - if [ $COVERAGE = "1" ]; then mkdir -p build/logs && vendor/bin/kahlan --clover=build/logs/clover.xml; fi
 
 after_success:

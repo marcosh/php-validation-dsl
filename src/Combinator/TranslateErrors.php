@@ -12,14 +12,10 @@ use function is_string;
 
 final class TranslateErrors implements Validation
 {
-    /**
-     * @var Validation
-     */
+    /** @var Validation */
     private $validation;
 
-    /**
-     * @var Translator
-     */
+    /** @var Translator */
     private $translator;
 
     public function __construct(Validation $validation, Translator $translator)
@@ -44,9 +40,9 @@ final class TranslateErrors implements Validation
 
         return array_map(
             /**
-             * @template T
+             * @psalm-template T
              * @psalm-param T $message
-             * @return T
+             * @psalm-return T|string
              */
             function ($message) use ($translator) {
                 if (is_string($message)) {

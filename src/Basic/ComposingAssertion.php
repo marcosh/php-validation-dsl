@@ -8,16 +8,11 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use function is_callable;
 
-/**
- * @template T
- */
 abstract class ComposingAssertion
 {
     public const MESSAGE = 'composing-assertion.not-as-asserted';
 
-    /**
-     * @var callable|null with signature $data -> string[]
-     */
+    /** @var callable|null with signature $data -> string[] */
     private $errorFormatter;
 
     public function __construct(?callable $errorFormatter = null)
@@ -27,13 +22,16 @@ abstract class ComposingAssertion
 
     public static function withFormatter(callable $errorFormatter): self
     {
+        /** @psalm-suppress UnsafeInstantiation */
         return new static($errorFormatter);
     }
 
     public static function withTranslator(Translator $translator): self
     {
+        /** @psalm-suppress UnsafeInstantiation */
         return new static(
             /**
+             * @psalm-template T
              * @param mixed $data
              * @psalm-param T $data
              * @return string[]
@@ -46,6 +44,7 @@ abstract class ComposingAssertion
     }
 
     /**
+     * @psalm-template T
      * @param mixed $data
      * @psalm-param T $data
      * @param array $context
@@ -54,6 +53,7 @@ abstract class ComposingAssertion
     abstract public function validate($data, array $context = []): ValidationResult;
 
     /**
+     * @psalm-template T
      * @param callable $assertion
      * @param mixed $data
      * @psalm-param T $data
