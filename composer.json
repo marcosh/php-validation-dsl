@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.1|^8.0",
         "webmozart/assert": "^1.3"
     },
     "autoload": {
@@ -23,12 +23,11 @@
         ]
     },
     "require-dev": {
-        "ext-json": "^1.5",
-        "maglnet/composer-require-checker": "^1.1",
+        "ext-json": "*",
         "kahlan/kahlan": "^4.3",
         "squizlabs/php_codesniffer": "^3.4",
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-strict-rules": "^0.11.0",
-        "vimeo/psalm": "^3.2"
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12",
+        "vimeo/psalm": "^3.2|^4.0|dev-master"
     }
 }

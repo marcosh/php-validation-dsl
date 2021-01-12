@@ -67,7 +67,7 @@ final class Associative implements Validation
                          * @param array $messages
                          * @return array
                          */
-                        static function (array $messages) use ($key) {
+                        static function (array $messages) use ($key): array {
                             return [$key => $messages];
                         }
                     );
