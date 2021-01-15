@@ -95,7 +95,7 @@ class CheckDuplicateExceptCurrentRecord
     
     public function __construct($recordRepository)
     {
-        $this->recordRespository = $recordRepository;
+        $this->recordRepository = $recordRepository;
     }
 
     public function validate($data, $context)
