@@ -7,22 +7,24 @@ namespace Marcosh\PhpValidationDSL\Basic;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 
+/**
+ * @template A
+ * @extends ComposingAssertion<A>
+ * @implements Validation<A, A>
+ */
 final class IsNull extends ComposingAssertion implements Validation
 {
     public const MESSAGE = 'is-null.not-null';
 
     /**
-     * @template T
-     * @psalm-param T $data
-     * @param mixed $data
-     * @param array $context
-     * @return ValidationResult
+     * @param A $data
+     * @return ValidationResult<A>
      */
     public function validate($data, array $context = []): ValidationResult
     {
         return $this->validateAssertion(
             /**
-             * @psalm-param T $data
+             * @param A $data
              */
             function ($data): bool {
                 return null === $data;

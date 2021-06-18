@@ -10,32 +10,31 @@ use Marcosh\PhpValidationDSL\Validation;
 use function in_array;
 use function is_callable;
 
+/**
+ * @template A
+ * @implements Validation<A, A>
+ */
 final class InArray implements Validation
 {
     public const NOT_IN_ARRAY = 'in-array.not-in-array';
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $values;
 
-    /**
-     * @var callable with signature $values -> $data -> string[]
-     */
+    /** @var callable(array, A): string[] */
     private $errorFormatter;
 
+    /**
+     * @param null|callable(array, A): string[] $errorFormatter
+     */
     private function __construct(array $values, ?callable $errorFormatter = null)
     {
         $this->values = $values;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             /**
-             * @template T
-             * @param array $values
-             * @param mixed $data
-             * @psalm-param T $data
+             * @param A $data
              * @return string[]
-             * @psalm-return array{0:string}
              */
             function (array $values, $data): array {
                 return [self::NOT_IN_ARRAY];
@@ -47,6 +46,9 @@ final class InArray implements Validation
         return new self($values);
     }
 
+    /**
+     * @param callable(array, mixed): string[] $errorFormatter
+     */
     public static function withValuesAndFormatter(array $values, callable $errorFormatter): self
     {
         return new self($values, $errorFormatter);
@@ -57,12 +59,8 @@ final class InArray implements Validation
         return new self(
             $values,
             /**
-             * @template T
-             * @param array $values
-             * @param mixed $data
-             * @psalm-param T $data
+             * @param A $data
              * @return string[]
-             * @psalm-return array{0:string}
              */
             function (array $values, $data) use ($translator): array {
                 return [$translator->translate(self::NOT_IN_ARRAY)];
@@ -70,6 +68,10 @@ final class InArray implements Validation
         );
     }
 
+    /**
+     * @param A $data
+     * @return ValidationResult<A>
+     */
     public function validate($data, array $context = []): ValidationResult
     {
         if (! in_array($data, $this->values, true)) {

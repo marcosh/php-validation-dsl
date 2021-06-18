@@ -8,18 +8,29 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use function is_callable;
 
+/**
+ * @template A
+ */
 abstract class ComposingAssertion
 {
     public const MESSAGE = 'composing-assertion.not-as-asserted';
 
-    /** @var callable|null with signature $data -> string[] */
+    /** @var null|callable(A): string[] */
     private $errorFormatter;
 
+    /**
+     * @param null|callable(A): string[] $errorFormatter
+     */
     public function __construct(?callable $errorFormatter = null)
     {
         $this->errorFormatter = $errorFormatter;
     }
 
+    /**
+     * @template B
+     * @param callable(B): string[] $errorFormatter
+     * @return self<B>
+     */
     public static function withFormatter(callable $errorFormatter): self
     {
         /** @psalm-suppress UnsafeInstantiation */
@@ -31,34 +42,29 @@ abstract class ComposingAssertion
         /** @psalm-suppress UnsafeInstantiation */
         return new static(
             /**
-             * @psalm-template T
-             * @param mixed $data
-             * @psalm-param T $data
+             * @template T
+             * @param T $data
              * @return string[]
-             * @psalm-return array{0:mixed}
              */
             function ($data) use ($translator): array {
-                return [$translator->translate(static::MESSAGE)];
+                /** @var string $message */
+                $message = static::MESSAGE;
+
+                return [$translator->translate($message)];
             }
         );
     }
 
     /**
-     * @psalm-template T
-     * @param mixed $data
-     * @psalm-param T $data
-     * @param array $context
-     * @return ValidationResult
+     * @param A $data
+     * @return ValidationResult<A>
      */
     abstract public function validate($data, array $context = []): ValidationResult;
 
     /**
-     * @psalm-template T
-     * @param callable $assertion
-     * @param mixed $data
-     * @psalm-param T $data
-     * @param array $context
-     * @return ValidationResult
+     * @param callable(A): bool $assertion
+     * @param A $data
+     * @return ValidationResult<A>
      */
     protected function validateAssertion(callable $assertion, $data, array $context = []): ValidationResult
     {
@@ -67,13 +73,14 @@ abstract class ComposingAssertion
             is_callable($this->errorFormatter) ?
                 $this->errorFormatter :
                 /**
-                 * @param mixed $data
-                 * @psalm-param T $data
+                 * @param A $data
                  * @return string[]
-                 * @psalm-return array{0:mixed}
                  */
                 function ($data): array {
-                    return [static::MESSAGE];
+                    /** @var string $message */
+                    $message = static::MESSAGE;
+
+                    return [$message];
                 }
         )->validate($data, $context);
     }

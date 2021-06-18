@@ -9,59 +9,71 @@ use Marcosh\PhpValidationDSL\Translator\Translator;
 use function is_callable;
 use Marcosh\PhpValidationDSL\Validation;
 
+/**
+ * @template A of array
+ * @implements Validation<A, A>
+ */
 final class HasNotKey implements Validation
 {
     public const PRESENT_KEY = 'has-not-key.present-key';
 
-    /**
-     * @var string
-     */
+    /** @var array-key */
     private $key;
 
-    /**
-     * @var callable with signature $key -> $data -> string[]
-     */
+    /** @var callable(array-key, A): string[] */
     private $errorFormatter;
 
-    private function __construct(string $key, ?callable $errorFormatter = null)
+    /**
+     * @param array-key $key
+     * @param null|callable(array-key, A): string[] $errorFormatter
+     */
+    private function __construct($key, ?callable $errorFormatter = null)
     {
         $this->key = $key;
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             /**
-             * @template T
-             * @param string $key
-             * @param mixed $data
-             * @psalm-param T $data
+             * @param array-key $key
+             * @param A $data
              * @return string[]
-             * @psalm-return array{0:string}
              */
             function (string $key, $data): array {
                 return [self::PRESENT_KEY];
             };
     }
 
+    /**
+     * @param array-key $key
+     */
     public static function withKey(string $key): self
     {
         return new self($key);
     }
 
+    /**
+     * @template B of array
+     * @param array-key $key
+     * @param callable(array-key, B): string[] $errorFormatter
+     */
     public static function withKeyAndFormatter(string $key, callable $errorFormatter): self
     {
         return new self($key, $errorFormatter);
     }
 
-    public static function withKeyAndTranslator(string $key, Translator $translator): self
+    /**
+     * @template B of array
+     * @param array-key $key
+     * @param Translator $translator
+     * @return self<B>
+     */
+    public static function withKeyAndTranslator($key, Translator $translator): self
     {
         return new self(
             $key,
             /**
-             * @template T
-             * @param string $key
-             * @param mixed $data
-             * @psalm-param T $data
+             * @param array-key $key
+             * @param B $data
              * @return string[]
-             * @psalm-return array{0:string}
              */
             function (string $key, $data) use ($translator): array {
                 return [$translator->translate(self::PRESENT_KEY)];
@@ -69,10 +81,18 @@ final class HasNotKey implements Validation
         );
     }
 
+    /**
+     * @param A $data
+     * @return ValidationResult<A>
+     * @psalm-suppress MoreSpecificImplementedParamType
+     */
     public function validate($data, array $context = []): ValidationResult
     {
         if (array_key_exists($this->key, $data)) {
-            return ValidationResult::errors(($this->errorFormatter)($this->key, $data));
+            /** @var ValidationResult<A> $ret */
+            $ret = ValidationResult::errors(($this->errorFormatter)($this->key, $data));
+
+            return $ret;
         }
 
         return ValidationResult::valid($data);
