@@ -6,6 +6,9 @@ namespace Marcosh\PhpValidationDSL\Result;
 
 use Marcosh\PhpValidationDSL\Equality;
 
+/**
+ * @template A
+ */
 final class ValidationResult
 {
     /**
@@ -14,7 +17,7 @@ final class ValidationResult
     private $isValid;
 
     /**
-     * @var mixed
+     * @var A
      */
     private $validContent;
 
@@ -25,7 +28,7 @@ final class ValidationResult
 
     /**
      * @param bool $isValid
-     * @param mixed $validContent
+     * @param A $validContent
      * @param array $messages
      */
     private function __construct(
@@ -39,8 +42,9 @@ final class ValidationResult
     }
 
     /**
-     * @param mixed $validContent
-     * @return self
+     * @template B
+     * @param B $validContent
+     * @return self<B>
      */
     public static function valid($validContent): self
     {
@@ -52,6 +56,12 @@ final class ValidationResult
         return new self(false, null, $messages);
     }
 
+    /**
+     * @param self<A> $that
+     * @param callable(A, A): A $joinValid
+     * @param callable(array, array): array $joinErrors
+     * @return self<A>
+     */
     public function join(self $that, callable $joinValid, callable $joinErrors): self
     {
         if (! $this->isValid || ! $that->isValid) {
@@ -61,6 +71,11 @@ final class ValidationResult
         return self::valid($joinValid($this->validContent, $that->validContent));
     }
 
+    /**
+     * @param self<A> $that
+     * @param callable(array, array): array $joinErrors
+     * @return self<A>
+     */
     public function meet(self $that, callable $joinErrors): self
     {
         if ($this->isValid) {
@@ -75,9 +90,10 @@ final class ValidationResult
     }
 
     /**
-     * @param callable $processValid : validContent -> mixed
-     * @param callable $processErrors : messages -> mixed
-     * @return mixed
+     * @template B
+     * @param callable(A): B $processValid
+     * @param callable(array): B $processErrors
+     * @return B
      */
     public function process(
         callable $processValid,
@@ -91,13 +107,14 @@ final class ValidationResult
     }
 
     /**
-     * @param callable $map : validContent -> newValidContent
-     * @return ValidationResult
+     * @template B
+     * @param callable(A): B $map
+     * @return ValidationResult<B>
      */
     public function map(callable $map): self
     {
         return $this->process(
-            /** @param mixed $validContent */
+            /** @param A $validContent */
             function ($validContent) use ($map): self {
                 return self::valid($map($validContent));
             },
@@ -107,6 +124,10 @@ final class ValidationResult
         );
     }
 
+    /**
+     * @param callable(array): array $map
+     * @return self<A>
+     */
     public function mapErrors(callable $map): self
     {
         return $this->process(
@@ -121,19 +142,25 @@ final class ValidationResult
     }
 
     /**
-     * @param ValidationResult $apply contains a callable
-     * @return self
+     * @template B
+     * @param ValidationResult<callable(A): B> $apply
+     * @return self<B>
      */
     public function apply(ValidationResult $apply): self
     {
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         return $apply->process(
+            /**
+             * @param callable(A): B $validApply
+             * @return self<B>
+             */
             function (callable $validApply): self {
                 return $this->map($validApply);
             },
-            /** @return mixed */
+            /** @return self<B> */
             function (array $applyMessages) {
                 return $this->process(
-                    /** @param mixed $validContent */
+                    /** @param A $validContent */
                     function ($validContent) use ($applyMessages): self {
                         return self::errors($applyMessages);
                     },
@@ -146,13 +173,14 @@ final class ValidationResult
     }
 
     /**
-     * @param callable $bind : validContent -> ValidationResult
-     * @return self
+     * @template B
+     * @param callable(A): self<B> $bind
+     * @return self<B>
      */
     public function bind(callable $bind): self
     {
         return $this->process(
-            /** @param mixed $validContent */
+            /** @param A $validContent */
             function ($validContent) use ($bind): self {
                 return $bind($validContent);
             },
@@ -162,7 +190,11 @@ final class ValidationResult
         );
     }
 
-    public function equals(self $that): bool
+    /**
+     * @param self<A> $that
+     * @return bool
+     */
+    public function equals($that): bool
     {
         if (is_object($this->validContent) && is_object($that->validContent) &&
             get_class($this->validContent) === get_class($that->validContent) &&
