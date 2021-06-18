@@ -8,9 +8,10 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 
 /**
+ * @template E
  * @template A
- * @extends ComposingAssertion<A>
- * @implements Validation<A, A>
+ * @extends ComposingAssertion<E, A>
+ * @implements Validation<A, E, A>
  */
 final class IsResource extends ComposingAssertion implements Validation
 {
@@ -18,7 +19,7 @@ final class IsResource extends ComposingAssertion implements Validation
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     public function validate($data, array $context = []): ValidationResult
     {

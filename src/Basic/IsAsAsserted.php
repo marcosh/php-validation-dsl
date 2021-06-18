@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Basic;
 
-use _HumbugBoxa991b62ce91e\React\Http\Io\Transaction;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use function is_callable;
 
 /**
+ * @template E
  * @template A
- * @implements Validation<A, A>
+ * @implements Validation<A, E, A>
  */
 final class IsAsAsserted implements Validation
 {
@@ -21,16 +21,18 @@ final class IsAsAsserted implements Validation
     /** @var callable(A): bool */
     private $assertion;
 
-    /** @var callable(A): string[] */
+    /** @var callable(A): E[] */
     private $errorFormatter;
 
     /**
      * @param callable(A): bool $assertion
-     * @param null|callable(A): string[] $errorFormatter
+     * @param null|callable(A): E[] $errorFormatter
      */
     private function __construct(callable $assertion, ?callable $errorFormatter = null)
     {
         $this->assertion = $assertion;
+
+        /** @psalm-suppress PossiblyInvalidPropertyAssignmentValue */
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             /**
@@ -45,7 +47,8 @@ final class IsAsAsserted implements Validation
     /**
      * @template B
      * @param callable(B): bool $assertion
-     * @return self<B>
+     * @return self<string, B>
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withAssertion(callable $assertion): self
     {
@@ -55,8 +58,8 @@ final class IsAsAsserted implements Validation
     /**
      * @template B
      * @param callable(B): bool $assertion
-     * @param callable(B): string[] $errorFormatter
-     * @return self<B>
+     * @param callable(B): E[] $errorFormatter
+     * @return self<E, B>
      */
     public static function withAssertionAndErrorFormatter(callable $assertion, callable $errorFormatter): self
     {
@@ -67,7 +70,8 @@ final class IsAsAsserted implements Validation
      * @template B
      * @param callable(B): bool $assertion
      * @param Translator $translator
-     * @return self<B>
+     * @return self<string, B>
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withAssertionAndTranslator(callable $assertion, Translator $translator): self
     {
@@ -85,7 +89,7 @@ final class IsAsAsserted implements Validation
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     public function validate($data, array $context = []): ValidationResult
     {

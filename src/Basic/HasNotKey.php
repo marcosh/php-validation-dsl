@@ -10,8 +10,9 @@ use function is_callable;
 use Marcosh\PhpValidationDSL\Validation;
 
 /**
+ * @template E
  * @template A of array
- * @implements Validation<A, A>
+ * @implements Validation<A, E, A>
  */
 final class HasNotKey implements Validation
 {
@@ -20,16 +21,18 @@ final class HasNotKey implements Validation
     /** @var array-key */
     private $key;
 
-    /** @var callable(array-key, A): string[] */
+    /** @var callable(array-key, A): E[] */
     private $errorFormatter;
 
     /**
      * @param array-key $key
-     * @param null|callable(array-key, A): string[] $errorFormatter
+     * @param null|callable(array-key, A): E[] $errorFormatter
      */
     private function __construct($key, ?callable $errorFormatter = null)
     {
         $this->key = $key;
+
+        /** @psalm-suppress PossiblyInvalidPropertyAssignmentValue */
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             /**
@@ -43,7 +46,10 @@ final class HasNotKey implements Validation
     }
 
     /**
+     * @template B of array
      * @param array-key $key
+     * @return self<string, B>
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withKey(string $key): self
     {
@@ -53,7 +59,7 @@ final class HasNotKey implements Validation
     /**
      * @template B of array
      * @param array-key $key
-     * @param callable(array-key, B): string[] $errorFormatter
+     * @param callable(array-key, B): E[] $errorFormatter
      */
     public static function withKeyAndFormatter(string $key, callable $errorFormatter): self
     {
@@ -64,7 +70,8 @@ final class HasNotKey implements Validation
      * @template B of array
      * @param array-key $key
      * @param Translator $translator
-     * @return self<B>
+     * @return self<string, B>
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withKeyAndTranslator($key, Translator $translator): self
     {
@@ -83,13 +90,13 @@ final class HasNotKey implements Validation
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function validate($data, array $context = []): ValidationResult
     {
         if (array_key_exists($this->key, $data)) {
-            /** @var ValidationResult<A> $ret */
+            /** @var ValidationResult<E, A> $ret */
             $ret = ValidationResult::errors(($this->errorFormatter)($this->key, $data));
 
             return $ret;

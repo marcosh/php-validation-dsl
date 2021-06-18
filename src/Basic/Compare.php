@@ -8,6 +8,7 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 
 /**
+ * @template E
  * @template A
  */
 abstract class Compare
@@ -17,12 +18,12 @@ abstract class Compare
     /** @var A could be any comparable type */
     protected $comparisonBasis;
 
-    /** @var callable(A, A): string[] */
+    /** @var callable(A, A): E[] */
     private $errorFormatter;
 
     /**
      * @param A $comparisonBasis
-     * @param callable(A, A): string[] $errorFormatter
+     * @param callable(A, A): E[] $errorFormatter
      */
     private function __construct($comparisonBasis, callable $errorFormatter)
     {
@@ -33,7 +34,7 @@ abstract class Compare
     /**
      * @template B
      * @param B $comparisonBasis
-     * @return Compare<B>
+     * @return self<string, B>
      */
     public static function withBound($comparisonBasis): self
     {
@@ -55,9 +56,10 @@ abstract class Compare
 
     /**
      * @template B
+     * @template F
      * @param B $comparisonBasis
-     * @param callable(B, B): string[] $errorFormatter
-     * @return Compare<B>
+     * @param callable(B, B): F[] $errorFormatter
+     * @return self<F, B>
      */
     public static function withBoundAndFormatter($comparisonBasis, callable $errorFormatter): self
     {
@@ -69,7 +71,7 @@ abstract class Compare
      * @template B
      * @param B $comparisonBasis
      * @param Translator $translator
-     * @return Compare<B>
+     * @return Compare<string, B>
      */
     public static function withBoundAndTranslator($comparisonBasis, Translator $translator): self
     {
@@ -91,14 +93,14 @@ abstract class Compare
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     abstract public function validate($data, array $context = []): ValidationResult;
 
     /**
-     * @param callable(A, A):bool $assertion
+     * @param callable(A, A): bool $assertion
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     protected function validateAssertion(callable $assertion, $data, array $context = []): ValidationResult
     {

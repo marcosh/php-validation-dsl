@@ -11,8 +11,9 @@ use function in_array;
 use function is_callable;
 
 /**
+ * @template E
  * @template A
- * @implements Validation<A, A>
+ * @implements Validation<A, E, A>
  */
 final class InArray implements Validation
 {
@@ -21,15 +22,17 @@ final class InArray implements Validation
     /** @var array */
     private $values;
 
-    /** @var callable(array, A): string[] */
+    /** @var callable(array, A): E[] */
     private $errorFormatter;
 
     /**
-     * @param null|callable(array, A): string[] $errorFormatter
+     * @param null|callable(array, A): E[] $errorFormatter
      */
     private function __construct(array $values, ?callable $errorFormatter = null)
     {
         $this->values = $values;
+
+        /** @psalm-suppress PossiblyInvalidPropertyAssignmentValue */
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             /**
@@ -41,19 +44,33 @@ final class InArray implements Validation
             };
     }
 
+    /**
+     * @template B
+     * @return self<string, B>
+     * @psalm-suppress MixedReturnTypeCoercion
+     */
     public static function withValues(array $values): self
     {
         return new self($values);
     }
 
     /**
-     * @param callable(array, mixed): string[] $errorFormatter
+     * @template F
+     * @template B
+     * @param callable(array, B): F[] $errorFormatter
+     * @return self<F, B>
      */
     public static function withValuesAndFormatter(array $values, callable $errorFormatter): self
     {
         return new self($values, $errorFormatter);
     }
 
+    /**
+     * @template B
+     * @param array $values
+     * @return self<string, B>
+     * @psalm-suppress MixedReturnTypeCoercion
+     */
     public static function withValuesAndTranslator(array $values, Translator $translator): self
     {
         return new self(
@@ -70,7 +87,7 @@ final class InArray implements Validation
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     public function validate($data, array $context = []): ValidationResult
     {

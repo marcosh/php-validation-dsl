@@ -9,9 +9,10 @@ use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 
 /**
+ * @template E
  * @template A
- * @extends Compare<A>
- * @implements Validation<A, A>
+ * @extends Compare<E, A>
+ * @implements Validation<A, E, A>
  */
 final class IsLessThan extends Compare implements Validation
 {
@@ -19,7 +20,7 @@ final class IsLessThan extends Compare implements Validation
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     public function validate($data, array $context = []): ValidationResult
     {
