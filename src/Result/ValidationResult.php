@@ -7,29 +7,23 @@ namespace Marcosh\PhpValidationDSL\Result;
 use Marcosh\PhpValidationDSL\Equality;
 
 /**
+ * @template E
  * @template A
  */
 final class ValidationResult
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $isValid;
 
-    /**
-     * @var A
-     */
+    /** @var A */
     private $validContent;
 
-    /**
-     * @var array
-     */
+    /** @var E[] */
     private $messages;
 
     /**
-     * @param bool $isValid
      * @param A $validContent
-     * @param array $messages
+     * @param E[] $messages
      */
     private function __construct(
         bool $isValid,
@@ -43,24 +37,31 @@ final class ValidationResult
 
     /**
      * @template B
+     * @template F
      * @param B $validContent
-     * @return self<B>
+     * @return self<F, B>
      */
     public static function valid($validContent): self
     {
         return new self(true, $validContent, []);
     }
 
+    /**
+     * @template B
+     * @template F
+     * @param F[] $messages
+     * @return self<F, B>
+     */
     public static function errors(array $messages): self
     {
         return new self(false, null, $messages);
     }
 
     /**
-     * @param self<A> $that
+     * @param self<E, A> $that
      * @param callable(A, A): A $joinValid
-     * @param callable(array, array): array $joinErrors
-     * @return self<A>
+     * @param callable(E[], E[]): E[] $joinErrors
+     * @return self<E, A>
      */
     public function join(self $that, callable $joinValid, callable $joinErrors): self
     {
@@ -72,9 +73,9 @@ final class ValidationResult
     }
 
     /**
-     * @param self<A> $that
-     * @param callable(array, array): array $joinErrors
-     * @return self<A>
+     * @param self<E, A> $that
+     * @param callable(E[], E[]): E[] $joinErrors
+     * @return self<E, A>
      */
     public function meet(self $that, callable $joinErrors): self
     {
@@ -92,7 +93,7 @@ final class ValidationResult
     /**
      * @template B
      * @param callable(A): B $processValid
-     * @param callable(array): B $processErrors
+     * @param callable(E[]): B $processErrors
      * @return B
      */
     public function process(
@@ -109,7 +110,7 @@ final class ValidationResult
     /**
      * @template B
      * @param callable(A): B $map
-     * @return ValidationResult<B>
+     * @return self<E, B>
      */
     public function map(callable $map): self
     {
@@ -125,8 +126,9 @@ final class ValidationResult
     }
 
     /**
-     * @param callable(array): array $map
-     * @return self<A>
+     * @template F
+     * @param callable(E[]): F[] $map
+     * @return self<F, A>
      */
     public function mapErrors(callable $map): self
     {
@@ -143,8 +145,8 @@ final class ValidationResult
 
     /**
      * @template B
-     * @param ValidationResult<callable(A): B> $apply
-     * @return self<B>
+     * @param ValidationResult<E, callable(A): B> $apply
+     * @return self<E, B>
      */
     public function apply(ValidationResult $apply): self
     {
@@ -152,12 +154,12 @@ final class ValidationResult
         return $apply->process(
             /**
              * @param callable(A): B $validApply
-             * @return self<B>
+             * @return self<E, B>
              */
             function (callable $validApply): self {
                 return $this->map($validApply);
             },
-            /** @return self<B> */
+            /** @return self<E, B> */
             function (array $applyMessages) {
                 return $this->process(
                     /** @param A $validContent */
@@ -174,8 +176,8 @@ final class ValidationResult
 
     /**
      * @template B
-     * @param callable(A): self<B> $bind
-     * @return self<B>
+     * @param callable(A): self<E, B> $bind
+     * @return self<E, B>
      */
     public function bind(callable $bind): self
     {
@@ -191,7 +193,7 @@ final class ValidationResult
     }
 
     /**
-     * @param self<A> $that
+     * @param self<E, A> $that
      * @return bool
      */
     public function equals($that): bool
