@@ -6,12 +6,16 @@ namespace Marcosh\PhpValidationDSL;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
+/**
+ * @template A
+ * @template B
+ */
 interface Validation
 {
     /**
-     * @param mixed $data
+     * @param A $data
      * @param array $context
-     * @return ValidationResult
+     * @return ValidationResult<B>
      */
     public function validate($data, array $context = []): ValidationResult;
 }
