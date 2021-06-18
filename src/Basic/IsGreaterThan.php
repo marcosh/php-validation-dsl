@@ -9,23 +9,25 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 
+/**
+ * @template A
+ * @extends Compare<A>
+ * @implements Validation<A, A>
+ */
 final class IsGreaterThan extends Compare implements Validation
 {
     public const MESSAGE = 'is-greater-than.not-greater-than';
 
     /**
-     * @template T
-     * @psalm-param T $data
-     * @param mixed $data
-     * @param array $context
-     * @return ValidationResult
+     * @param A $data
+     * @return ValidationResult<A>
      */
     public function validate($data, array $context = []): ValidationResult
     {
         return $this->validateAssertion(
             /**
-             * @psalm-param T $bound
-             * @psalm-param T $data
+             * @param A $bound
+             * @param A $data
              */
             function ($bound, $data): bool {
                 return $data > $bound;

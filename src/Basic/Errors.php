@@ -7,23 +7,24 @@ namespace Marcosh\PhpValidationDSL\Basic;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 
+/**
+ * @template A
+ * @extends ComposingAssertion<A>
+ * @implements Validation<A, A>
+ */
 final class Errors extends ComposingAssertion implements Validation
 {
     public const MESSAGE = 'errors.invalid-data';
 
     /**
-     * @template T
-     * @psalm-param T $data
-     * @param mixed $data
-     * @param array $context
-     * @return ValidationResult
+     * @param A $data
+     * @return ValidationResult<A>
      */
     public function validate($data, array $context = []): ValidationResult
     {
         $alwaysFalse =
             /**
-             * @param mixed $data
-             * @psalm-param T $data
+             * @param A $data
              * @return false
              */
             function ($data): bool {
