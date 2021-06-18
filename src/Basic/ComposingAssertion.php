@@ -9,17 +9,18 @@ use Marcosh\PhpValidationDSL\Translator\Translator;
 use function is_callable;
 
 /**
+ * @template E
  * @template A
  */
 abstract class ComposingAssertion
 {
     public const MESSAGE = 'composing-assertion.not-as-asserted';
 
-    /** @var null|callable(A): string[] */
+    /** @var null|callable(A): E[] */
     private $errorFormatter;
 
     /**
-     * @param null|callable(A): string[] $errorFormatter
+     * @param null|callable(A): E[] $errorFormatter
      */
     public function __construct(?callable $errorFormatter = null)
     {
@@ -28,8 +29,9 @@ abstract class ComposingAssertion
 
     /**
      * @template B
-     * @param callable(B): string[] $errorFormatter
-     * @return self<B>
+     * @template F
+     * @param callable(B): F[] $errorFormatter
+     * @return self<F, B>
      */
     public static function withFormatter(callable $errorFormatter): self
     {
@@ -37,13 +39,16 @@ abstract class ComposingAssertion
         return new static($errorFormatter);
     }
 
+    /**
+     * @template B
+     * @return self<string, B>
+     */
     public static function withTranslator(Translator $translator): self
     {
         /** @psalm-suppress UnsafeInstantiation */
         return new static(
             /**
-             * @template T
-             * @param T $data
+             * @param B $data
              * @return string[]
              */
             function ($data) use ($translator): array {
@@ -57,14 +62,14 @@ abstract class ComposingAssertion
 
     /**
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     abstract public function validate($data, array $context = []): ValidationResult;
 
     /**
      * @param callable(A): bool $assertion
      * @param A $data
-     * @return ValidationResult<A>
+     * @return ValidationResult<E, A>
      */
     protected function validateAssertion(callable $assertion, $data, array $context = []): ValidationResult
     {
