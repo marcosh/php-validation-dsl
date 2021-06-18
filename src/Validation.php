@@ -8,6 +8,7 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
 /**
  * @template A
+ * @template E
  * @template B
  */
 interface Validation
@@ -15,7 +16,7 @@ interface Validation
     /**
      * @param A $data
      * @param array $context
-     * @return ValidationResult<B>
+     * @return ValidationResult<E, B>
      */
     public function validate($data, array $context = []): ValidationResult;
 }
