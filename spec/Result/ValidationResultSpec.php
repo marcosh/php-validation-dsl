@@ -57,28 +57,28 @@ describe('Validation result', function () {
         $result1 = ValidationResult::valid('gigi');
         $result2 = ValidationResult::valid('bepi');
 
-        expect($result1->meet($result2, 'array_merge'))->toEqual(ValidationResult::valid('gigi'));
+        expect($result1->meet($result2, function ($x, $y) {return $x . $y;}, 'array_merge'))->toEqual(ValidationResult::valid('gigibepi'));
     });
 
     it('meets a valid result with an invalid one to an valid result preserving value', function () {
         $result1 = ValidationResult::valid('gigi');
         $result2 = ValidationResult::errors(['bepi']);
 
-        expect($result1->meet($result2, 'array_merge'))->toEqual(ValidationResult::valid('gigi'));
+        expect($result1->meet($result2, function ($x, $y) {return $x . $y;}, 'array_merge'))->toEqual(ValidationResult::valid('gigi'));
     });
 
     it('meets an invalid result with a valid one to a valid result preserving value', function () {
         $result1 = ValidationResult::errors(['gigi']);
         $result2 = ValidationResult::valid('bepi');
 
-        expect($result1->meet($result2, 'array_merge'))->toEqual(ValidationResult::valid('bepi'));
+        expect($result1->meet($result2, function ($x, $y) {return $x . $y;}, 'array_merge'))->toEqual(ValidationResult::valid('bepi'));
     });
 
     it('meets two invalid results to an invalid result merging errors', function () {
         $result1 = ValidationResult::errors(['gigi']);
         $result2 = ValidationResult::errors(['bepi']);
 
-        expect($result1->meet($result2, 'array_merge'))
+        expect($result1->meet($result2, function ($x, $y) {return $x . $y;}, 'array_merge'))
             ->toEqual(ValidationResult::errors(['gigi', 'bepi']));
     });
 

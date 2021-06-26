@@ -58,10 +58,14 @@ final class ValidationResult
     }
 
     /**
-     * @param self<E, A> $that
-     * @param callable(A, A): A $joinValid
-     * @param callable(E[], E[]): E[] $joinErrors
-     * @return self<E, A>
+     * @template F
+     * @template B
+     * @template G
+     * @template C
+     * @param self<F, B> $that
+     * @param callable(A, B): C $joinValid
+     * @param callable(E[], F[]): G[] $joinErrors
+     * @return self<G, C>
      */
     public function join(self $that, callable $joinValid, callable $joinErrors): self
     {
@@ -74,11 +78,16 @@ final class ValidationResult
 
     /**
      * @param self<E, A> $that
+     * @param callable(A, A): A $joinValid
      * @param callable(E[], E[]): E[] $joinErrors
      * @return self<E, A>
      */
-    public function meet(self $that, callable $joinErrors): self
+    public function meet(self $that, callable $joinValid, callable $joinErrors): self
     {
+        if ($this->isValid && $that->isValid) {
+            return self::valid($joinValid($this->validContent, $that->validContent));
+        }
+
         if ($this->isValid) {
             return $this;
         }
