@@ -9,6 +9,8 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <file name="src/functions.php" />
+            <file name="src/Result/functions.php" />
         </ignoreFiles>
     </projectFiles>
 
