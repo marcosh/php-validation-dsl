@@ -4,24 +4,26 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Translator;
 
-use Webmozart\Assert\Assert;
 use function array_key_exists;
 
 final class KeyValueTranslator implements Translator
 {
     /**
-     * @var array key value dictionary of translations
+     * @var array<string, string> key value dictionary of translations
      */
     private $dictionary;
 
+    /**
+     * @param array<string, string> $dictionary
+     */
     private function __construct(array $dictionary)
     {
-        Assert::allString(array_keys($dictionary));
-        Assert::allString($dictionary);
-
         $this->dictionary = $dictionary;
     }
 
+    /**
+     * @param array<string, string> $dictionary
+     */
     public static function withDictionary(array $dictionary): self
     {
         return new self($dictionary);
