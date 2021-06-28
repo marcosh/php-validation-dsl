@@ -13,9 +13,7 @@ use Webmozart\Assert\Assert;
 
 final class Associative implements Validation
 {
-    /**
-     * @var Validation[]
-     */
+    /** @var Validation[] */
     private $validations;
 
     /**
@@ -44,7 +42,7 @@ final class Associative implements Validation
             new IsArray(),
             All::validations(array_map(
                 /**
-                 * @param mixed $key
+                 * @param array-key $key
                  * @param Validation $validation
                  * @return Validation
                  */

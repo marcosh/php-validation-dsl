@@ -13,6 +13,9 @@ final class Coalesce implements Translator
      */
     private $translators;
 
+    /**
+     * @param (Translator|null)[] $translators
+     */
     private function __construct(array $translators)
     {
         $this->translators = $translators;

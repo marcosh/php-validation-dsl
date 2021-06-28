@@ -7,22 +7,23 @@ namespace Marcosh\PhpValidationDSL\Combinator;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 
+/**
+ * @template A
+ * @template B
+ * @template E
+ * @implements Validation<A, E, A>
+ */
 final class Focus implements Validation
 {
-    /**
-     * @var callable
-     */
+    /** @var callable(A): B */
     private $focus;
 
-    /**
-     * @var Validation
-     */
+    /** @var Validation<B, E, mixed> */
     private $validation;
 
     /**
-     * Focus constructor.
-     * @param callable $focus :: $data -> mixed
-     * @param Validation $validation
+     * @param callable(A): B $focus
+     * @param Validation<B, E, mixed> $validation
      */
     private function __construct(callable $focus, Validation $validation)
     {
@@ -31,9 +32,12 @@ final class Focus implements Validation
     }
 
     /**
-     * @param callable $focus :: $data -> mixed
-     * @param Validation $validation
-     * @return self
+     * @template C
+     * @template D
+     * @template F
+     * @param callable(C): D $focus
+     * @param Validation<D, F, mixed> $validation
+     * @return self<C, D, F>
      */
     public static function on(callable $focus, Validation $validation): self
     {
@@ -41,18 +45,17 @@ final class Focus implements Validation
     }
 
     /**
-     * @template T
-     * @psalm-param T $data
-     * @param mixed $data
+     * @param A $data
      * @param array $context
-     * @return ValidationResult
+     * @return ValidationResult<E, A>
      */
     public function validate($data, array $context = []): ValidationResult
     {
         return $this->validation->validate(($this->focus)($data), $context)
+            // would really need a Lens here to update the outer value applying the callable to the inner value
             ->map(
                 /**
-                 * @return T
+                 * @return A
                  */
                 function () use ($data) {
                     return $data;
