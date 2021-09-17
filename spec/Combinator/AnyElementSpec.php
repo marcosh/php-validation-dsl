@@ -21,6 +21,18 @@ describe('AnyElement', function () {
         expect($anyElement->validate([42, 'bepi'])->equals(ValidationResult::valid([42, 'bepi'])))->toBeTruthy();
     });
 
+    it('returns a valid result if the validation on the first element succeeds', function () {
+        $anyElement = AnyElement::validation(new IsString());
+
+        expect($anyElement->validate(['gigi', 42])->equals(ValidationResult::valid(['gigi', 42])))->toBeTruthy();
+    });
+
+    it('returns a valid result if the validation succeeds on both elements', function () {
+        $anyElement = AnyElement::validation(new IsString());
+
+        expect($anyElement->validate(['gigi', 'bepi'])->equals(ValidationResult::valid(['gigi', 'bepi'])))->toBeTruthy();
+    });
+
     it('returns an error result if every element fails the validation', function () {
         $anyElement = AnyElement::validation(new IsString());
 

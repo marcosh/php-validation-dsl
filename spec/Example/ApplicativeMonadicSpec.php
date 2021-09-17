@@ -8,6 +8,7 @@ use Marcosh\PhpValidationDSL\Basic\IsGreaterThan;
 use Marcosh\PhpValidationDSL\Basic\Regex;
 use Marcosh\PhpValidationDSL\Equality;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+
 use function Marcosh\PhpValidationDSL\Result\lift;
 use function Marcosh\PhpValidationDSL\Result\mdo;
 
@@ -64,6 +65,7 @@ class CustomerId implements Equality
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MultipleClasses
 class EmailAddress implements Equality
 {
     /**
@@ -100,6 +102,7 @@ class EmailAddress implements Equality
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MultipleClasses
 class CustomerInfo implements Equality
 {
     /**
@@ -186,7 +189,7 @@ class CustomerInfo implements Equality
                 return EmailAddress::buildValid($email);
             },
             static function ($id, $email) {
-                return ValidationResult::valid(new self ($id, $email));
+                return ValidationResult::valid(new self($id, $email));
             }
         );
     }
@@ -218,7 +221,7 @@ describe('applicative style', function () {
         )->toBeTruthy();
     });
 
-    it('returns the correct error if the id is negative' , function () {
+    it('returns the correct error if the id is negative', function () {
         expect(
             CustomerInfo::buildValidApplicative(-42, 'gigi@zucon.it')->equals(
                 ValidationResult::errors([IsGreaterThan::MESSAGE])
@@ -252,7 +255,7 @@ describe('applicative style with lift', function () {
         )->toBeTruthy();
     });
 
-    it('returns the correct error if the id is negative' , function () {
+    it('returns the correct error if the id is negative', function () {
         expect(
             CustomerInfo::buildValidApplicativeWithLift(-42, 'gigi@zucon.it')->equals(
                 ValidationResult::errors([IsGreaterThan::MESSAGE])
@@ -286,7 +289,7 @@ describe('monadic style', function () {
         )->toBeTruthy();
     });
 
-    it('returns the correct error if the id is negative' , function () {
+    it('returns the correct error if the id is negative', function () {
         expect(
             CustomerInfo::buildValidMonadic(-42, 'gigi@zucon.it')->equals(
                 ValidationResult::errors([IsGreaterThan::MESSAGE])
@@ -320,7 +323,7 @@ describe('monadic style with do_', function () {
         )->toBeTruthy();
     });
 
-    it('returns the correct error if the id is negative' , function () {
+    it('returns the correct error if the id is negative', function () {
         expect(
             CustomerInfo::buildValidMonadicWithDo(-42, 'gigi@zucon.it')->equals(
                 ValidationResult::errors([IsGreaterThan::MESSAGE])

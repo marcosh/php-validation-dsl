@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSL\Basic;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
+
 use function array_key_exists;
 use function is_callable;
 
@@ -47,10 +48,7 @@ final class HasKey implements Validation
     }
 
     /**
-     * @template B of array
      * @param array-key $key
-     * @return self<string, B>
-     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withKey(string $key): self
     {
@@ -58,9 +56,10 @@ final class HasKey implements Validation
     }
 
     /**
-     * @template B of array
+     * @template F
      * @param array-key $key
-     * @param callable(array-key, B): E[] $errorFormatter
+     * @param callable(array-key, array): F[] $errorFormatter
+     * @return self<F, array>
      */
     public static function withKeyAndFormatter($key, callable $errorFormatter): self
     {
@@ -68,10 +67,9 @@ final class HasKey implements Validation
     }
 
     /**
-     * @template B of array
      * @param array-key $key
      * @param Translator $translator
-     * @return self<string, B>
+     * @return self<string, array>
      * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withKeyAndTranslator($key, Translator $translator): self
@@ -80,7 +78,7 @@ final class HasKey implements Validation
             $key,
             /**
              * @param array-key $key
-             * @param B $data
+             * @param array $data
              * @return string[]
              */
             function ($key, array $data) use ($translator): array {
@@ -101,7 +99,6 @@ final class HasKey implements Validation
             $ret = ValidationResult::errors(($this->errorFormatter)($this->key, $data));
 
             return $ret;
-
         }
 
         return ValidationResult::valid($data);

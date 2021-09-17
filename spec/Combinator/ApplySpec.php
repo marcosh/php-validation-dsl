@@ -10,13 +10,17 @@ use Marcosh\PhpValidationDSL\Result\ValidationResult;
 
 describe('Apply', function () {
     it('does apply a valid callable to a correct validation', function () {
-        $f = ValidationResult::valid(function (string $x) {return strlen($x);});
+        $f = ValidationResult::valid(function (string $x) {
+            return strlen($x);
+        });
 
         expect(Apply::to(new IsString(), $f)->validate('abc')->equals(ValidationResult::valid(3)))->toBeTruthy();
     });
 
     it('does not modify the result of a failed validation', function () {
-        $f = ValidationResult::valid(function (string $x) {return strlen($x);});
+        $f = ValidationResult::valid(function (string $x) {
+            return strlen($x);
+        });
 
         expect(
             Apply::to(new IsString(), $f)->validate(42)->equals(ValidationResult::errors([IsString::MESSAGE]))

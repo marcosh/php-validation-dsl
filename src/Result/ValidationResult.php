@@ -15,7 +15,7 @@ final class ValidationResult
     /** @var bool */
     private $isValid;
 
-    /** @var A */
+    /** @var A|null */
     private $validContent;
 
     /** @var E[] */
@@ -73,27 +73,55 @@ final class ValidationResult
             return self::errors($joinErrors($this->messages, $that->messages));
         }
 
-        return self::valid($joinValid($this->validContent, $that->validContent));
+        /** @var A $thisContent */
+        $thisContent = $this->validContent;
+        /** @var B $thatContent */
+        $thatContent = $that->validContent;
+
+        return self::valid($joinValid($thisContent, $thatContent));
     }
 
     /**
-     * @param self<E, A> $that
-     * @param callable(A, A): A $joinValid
-     * @param callable(E[], E[]): E[] $joinErrors
-     * @return self<E, A>
+     * @template F
+     * @template B
+     * @template G
+     * @template C
+     * @param self<F, B> $that
+     * @param callable(A, B): C $joinBothValid
+     * @param callable(A): C $joinThisValid
+     * @param callable(B): C $joinThatValid
+     * @param callable(E[], F[]): G[] $joinErrors
+     * @return self<G, C>
      */
-    public function meet(self $that, callable $joinValid, callable $joinErrors): self
-    {
+    public function meet(
+        self $that,
+        callable $joinBothValid,
+        callable $joinThisValid,
+        callable $joinThatValid,
+        callable $joinErrors
+    ): self {
+        $thisContent = $this->validContent;
+        $thatContent = $that->validContent;
+
         if ($this->isValid && $that->isValid) {
-            return self::valid($joinValid($this->validContent, $that->validContent));
+            /**
+             * @var A $thisContent
+             * @var B $thatContent
+             */
+
+            return self::valid($joinBothValid($thisContent, $thatContent));
         }
 
         if ($this->isValid) {
-            return $this;
+            /** @var A $thisContent */
+
+            return self::valid($joinThisValid($thisContent));
         }
 
         if ($that->isValid) {
-            return $that;
+            /** @var B $thatContent */
+
+            return self::valid($joinThatValid($thatContent));
         }
 
         return self::errors($joinErrors($this->messages, $that->messages));
@@ -113,6 +141,7 @@ final class ValidationResult
             return $processErrors($this->messages);
         }
 
+        /** @psalm-suppress PossiblyNullArgument */
         return $processValid($this->validContent);
     }
 
@@ -207,9 +236,11 @@ final class ValidationResult
      */
     public function equals($that): bool
     {
-        if (is_object($this->validContent) && is_object($that->validContent) &&
+        if (
+            is_object($this->validContent) && is_object($that->validContent) &&
             get_class($this->validContent) === get_class($that->validContent) &&
-            $this->validContent instanceof Equality) {
+            $this->validContent instanceof Equality
+        ) {
             $contentEquality = $this->validContent->equals($that->validContent);
         } else {
             $contentEquality = $this->validContent === $that->validContent;

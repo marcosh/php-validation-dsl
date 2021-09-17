@@ -6,25 +6,25 @@ namespace Marcosh\PhpValidationDSL\Combinator;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
+
 use function is_callable;
 
 /**
  * @template A
  * @template E
- * @template B
- * @implements Validation<A[], E[], B[]>
+ * @implements Validation<A[], E[], A[]>
  */
 final class AnyElement implements Validation
 {
-    /** @var Validation<A, E, B> */
+    /** @var Validation<A, E, A> */
     private $elementValidation;
 
-    /** @var callable(E[][], E[][]): E[][] */
+    /** @var callable(array-key, E[][], E[]): E[][] */
     private $errorFormatter;
 
     /**
-     * @param Validation<A, E, B> $validation
-     * @param null|callable(E[][], E[][]): E[][] $errorFormatter
+     * @param Validation<A, E, A> $validation
+     * @param null|callable(array-key, E[][], E[]): E[][] $errorFormatter
      */
     private function __construct(Validation $validation, ?callable $errorFormatter = null)
     {
@@ -32,21 +32,23 @@ final class AnyElement implements Validation
         $this->errorFormatter = is_callable($errorFormatter) ?
             $errorFormatter :
             /**
+             * @param array-key $key
              * @param E[][] $resultMessages
-             * @param E[][] $validationMessages
+             * @param E[] $validationMessages
              * @return E[][]
              */
-            function (array $resultMessages, array $validationMessages): array {
-                return array_merge($resultMessages, $validationMessages);
+            function ($key, array $resultMessages, array $validationMessages): array {
+                $resultMessages[$key] = $validationMessages;
+
+                return $resultMessages;
             };
     }
 
     /**
      * @template C
      * @template F
-     * @template D
-     * @param Validation<C, F, D> $validation
-     * @return self<C, F, D>
+     * @param Validation<C, F, C> $validation
+     * @return self<C, F>
      */
     public static function validation(Validation $validation): self
     {
@@ -56,12 +58,11 @@ final class AnyElement implements Validation
     /**
      * @template C
      * @template F
-     * @template D
-     * @param Validation<C, F, D> $validation
-     * @param callable(F[][], F[][]): F[][] $errorFormatter
-     * @return self<C, F, D>
+     * @param Validation<C, F, C> $validation
+     * @param callable(array-key, F[][], F[]): F[][] $errorFormatter
+     * @return self<C, F>
      */
-    public static function validationWithFormatter(Validation $validation, callable  $errorFormatter): self
+    public static function validationWithFormatter(Validation $validation, callable $errorFormatter): self
     {
         return new self($validation, $errorFormatter);
     }
@@ -69,43 +70,55 @@ final class AnyElement implements Validation
     /**
      * @param A[] $data
      * @param array $context
-     * @return ValidationResult<E[], B[]>
+     * @return ValidationResult<E[], A[]>
      */
     public function validate($data, array $context = []): ValidationResult
     {
         $errorFormatter = $this->errorFormatter;
 
-        /** @var ValidationResult<E[], B[]> $result */
+        /** @var ValidationResult<E[], A[]> $result */
         $result = ValidationResult::errors([]);
 
         foreach ($data as $key => $element) {
-            /** @var ValidationResult<E[], B[]> $newResult */
-            $newResult = $this->elementValidation->validate($element, $context)
-                ->map(function ($v) use ($key) {return [$key => $v];})
-                ->mapErrors(function ($messages) use ($key) {return [$key => $messages];});
-
             $result = $result->meet(
-                $newResult,
+                $this->elementValidation->validate($element, $context),
                 /**
-                 * @param B[] $result
-                 * @param B[] $next
-                 * @return B[]
+                 * @param A[] $x
+                 * @param A $y
+                 * @return A[]
                  */
-                function (array $result, array $next)
-                {
-                    return array_merge($result, $next);
+                function (array $x, $y) {
+                    return $x;
+                },
+                /**
+                 * @param A[] $x
+                 * @return A[]
+                 */
+                function (array $x) {
+                    return $x;
+                },
+                /**
+                 * @param A $x
+                 * @return A[]
+                 */
+                function ($x) {
+                    return [$x];
                 },
                 /**
                  * @param E[][] $resultMessages
-                 * @param E[][] $validationMessages
+                 * @param E[] $validationMessages
                  * @return E[][]
                  */
                 function (array $resultMessages, array $validationMessages) use ($key, $errorFormatter) {
-                    return $errorFormatter($resultMessages, $validationMessages);
+                    return $errorFormatter($key, $resultMessages, $validationMessages);
                 }
             );
         }
 
-        return $result;
+        return $result->map(
+            function () use ($data) {
+                return $data;
+            }
+        );
     }
 }

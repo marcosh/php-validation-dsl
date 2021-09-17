@@ -9,26 +9,26 @@ use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
+
 use function is_callable;
 
 /**
  * @template A
  * @template E
- * @template B
- * @implements Validation<A, E[], B>
+ * @implements Validation<A, E[], A>
  */
 final class Any implements Validation
 {
     public const NOT_EVEN_ONE = 'any.not-even-one';
 
-    /** @var Validation<A, E, B>[] */
+    /** @var Validation<A, E, mixed>[] */
     private $validations;
 
     /** @var callable(E[]): E[][] */
     private $errorFormatter;
 
     /**
-     * @param Validation<A, E, B>[] $validations
+     * @param Validation<A, E, mixed>[] $validations
      * @param null|callable(E[]): E[][] $errorFormatter
      * @throws InvalidArgumentException
      */
@@ -53,9 +53,8 @@ final class Any implements Validation
     /**
      * @template C
      * @template F
-     * @template D
-     * @param Validation<C, F, D>[] $validations
-     * @return self<C, F, D>
+     * @param Validation<C, F, mixed>[] $validations
+     * @return self<C, F>
      * @throws InvalidArgumentException
      */
     public static function validations(array $validations): self
@@ -66,10 +65,9 @@ final class Any implements Validation
     /**
      * @template C
      * @template F
-     * @template D
-     * @param Validation<C, F, D>[] $validations
+     * @param Validation<C, F, mixed>[] $validations
      * @param callable(F[]): F[][] $errorFormatter
-     * @return self<C, F, D>
+     * @return self<C, F>
      * @throws InvalidArgumentException
      */
     public static function validationsWithFormatter(array $validations, callable $errorFormatter): self
@@ -80,10 +78,9 @@ final class Any implements Validation
     /**
      * @template C
      * @template F
-     * @template D
-     * @param Validation<C, F, D>[] $validations
+     * @param Validation<C, F, mixed>[] $validations
      * @param Translator $translator
-     * @return self<C, F, D>
+     * @return self<C, F>
      * @throws InvalidArgumentException
      */
     public static function validationsWithTranslator(array $validations, Translator $translator): self
@@ -105,28 +102,48 @@ final class Any implements Validation
     /**
      * @param A $data
      * @param array $context
-     * @return ValidationResult<E[], B>
+     * @return ValidationResult<E[], A>
      */
     public function validate($data, array $context = []): ValidationResult
     {
-        /** @var ValidationResult<E, B> $result */
+        /** @var ValidationResult<E, A> $result */
         $result = ValidationResult::errors([]);
 
         foreach ($this->validations as $validation) {
             $result = $result->meet(
-                $validation->validate($data, $context)->mapErrors(function ($e) {return [$e];}),
+                $validation->validate($data, $context),
                 /**
-                 * @param B $x
-                 * @param B $y
-                 * @return B
+                 * @param A $x
+                 * @param A $y
+                 * @return A
                  */
                 function ($x, $y) {
+                    return $x;
+                },
+                /**
+                 * @param A $x
+                 * @return A
+                 */
+                function ($x) {
+                    return $x;
+                },
+                /**
+                 * @param A $x
+                 * @return A
+                 */
+                function ($x) {
                     return $x;
                 },
                 'array_merge'
             );
         }
 
-        return $result->mapErrors($this->errorFormatter);
+        return $result
+            ->mapErrors($this->errorFormatter)
+            ->map(
+                function () use ($data) {
+                    return $data;
+                }
+            );
     }
 }

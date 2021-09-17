@@ -12,7 +12,7 @@ describe('IsGreaterThan', function () {
     $isGreaterThan = IsGreaterThan::withBound(42);
 
     it('returns a valid result if the value is greater than the bound', function () use ($isGreaterThan) {
-       expect($isGreaterThan->validate(87)->equals(ValidationResult::valid(87)))->toBeTruthy();
+        expect($isGreaterThan->validate(87)->equals(ValidationResult::valid(87)))->toBeTruthy();
     });
 
     it('returns an error result if the value is equal to be bound', function () use ($isGreaterThan) {

@@ -45,7 +45,7 @@ abstract class Compare
              * @param B $data
              * @return string[]
              */
-            function ($comparisonBasis, array $data): array {
+            function ($comparisonBasis, $data): array {
                 /** @var string $message */
                 $message = static::MESSAGE;
 

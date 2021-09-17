@@ -33,11 +33,11 @@ describe('curry function', function () {
     });
 
     it('curries a function with two arguments', function () {
-       $f = function (int $a, int $b) {
+        $f = function (int $a, int $b) {
             return $a + $b;
-       };
+        };
 
-       expect (curry($f)(2)(3))->toBe(5);
+        expect(curry($f)(2)(3))->toBe(5);
     });
 
     it('curries a function with three arguments', function () {
@@ -45,25 +45,26 @@ describe('curry function', function () {
             return $a + $b + $c;
         };
 
-        expect (curry($f)(2)(3)(4))->toBe(9);
+        expect(curry($f)(2)(3)(4))->toBe(9);
     });
 
     it('curries an object method', function () {
         $foo = new class {
-            public function bar(int $a, int $b): int {
+            public function bar(int $a, int $b): int
+            {
                 return $a + $b;
             }
         };
 
         $f = [$foo, 'bar'];
 
-        expect (curry($f)(2)(3))->toBe(5);
+        expect(curry($f)(2)(3))->toBe(5);
     });
 
     it('curries a static method', function () {
         $f = [Adder::class, 'sum'];
 
-        expect (curry($f)(2)(3))->toBe(5);
+        expect(curry($f)(2)(3))->toBe(5);
     });
 
     it('curries as invokable object', function () {
@@ -74,7 +75,7 @@ describe('curry function', function () {
             }
         };
 
-        expect (curry($f)(2)(3))->toBe(5);
+        expect(curry($f)(2)(3))->toBe(5);
     });
 });
 

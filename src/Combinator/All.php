@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
 use Webmozart\Assert\Assert;
+
 use function is_callable;
 
 /**

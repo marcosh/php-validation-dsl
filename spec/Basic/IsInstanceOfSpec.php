@@ -6,10 +6,13 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsInstanceOf;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
-use function json_encode;
 use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
-class InstanceFoo {};
+use function json_encode;
+
+class InstanceFoo
+{
+}
 
 describe('IsInstanceOf', function () {
     $isInstanceOf = IsInstanceOf::withClassName(InstanceFoo::class);

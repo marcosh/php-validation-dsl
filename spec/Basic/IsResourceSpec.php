@@ -6,8 +6,9 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\IsResource;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
-use function fopen;
 use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
+
+use function fopen;
 
 describe('IsResource', function () {
     $isResource = new IsResource();

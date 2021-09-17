@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Marcosh\PhpValidationDSL\Combinator;
 
+use Closure;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
 use Marcosh\PhpValidationDSL\Validation;
+
 use function is_array;
 use function is_string;
 
@@ -52,7 +54,7 @@ final class TranslateErrors implements Validation
      */
     public function validate($data, array $context = []): ValidationResult
     {
-        return MapErrors::to($this->validation, [$this, 'translateNestedErrors'])->validate($data, $context);
+        return MapErrors::to($this->validation, Closure::fromCallable([$this, 'translateNestedErrors']))->validate($data, $context);
     }
 
     /**
