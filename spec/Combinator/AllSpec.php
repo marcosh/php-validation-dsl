@@ -9,6 +9,7 @@ use Marcosh\PhpValidationDSL\Basic\IsString;
 use Marcosh\PhpValidationDSL\Basic\Regex;
 use Marcosh\PhpValidationDSL\Combinator\All;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
+
 use function json_encode;
 
 describe('All', function () {

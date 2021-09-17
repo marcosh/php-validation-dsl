@@ -7,6 +7,7 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 use Marcosh\PhpValidationDSL\Basic\InArray;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
+
 use function json_encode;
 
 describe('InArray', function () {

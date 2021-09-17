@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Marcosh\PhpValidationDSL\Result;
 
 use Closure;
-use function Marcosh\PhpValidationDSL\curry;
 use ReflectionFunction;
 use Webmozart\Assert\Assert;
+
+use function Marcosh\PhpValidationDSL\curry;
 
 /**
  * @param callable $f with signature (T1 $a1, T2 $a2, ...) ->  T

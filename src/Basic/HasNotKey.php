@@ -6,8 +6,9 @@ namespace Marcosh\PhpValidationDSL\Basic;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Translator\Translator;
-use function is_callable;
 use Marcosh\PhpValidationDSL\Validation;
+
+use function is_callable;
 
 /**
  * @template E
@@ -46,10 +47,7 @@ final class HasNotKey implements Validation
     }
 
     /**
-     * @template B of array
      * @param array-key $key
-     * @return self<string, B>
-     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withKey(string $key): self
     {
@@ -67,10 +65,9 @@ final class HasNotKey implements Validation
     }
 
     /**
-     * @template B of array
      * @param array-key $key
      * @param Translator $translator
-     * @return self<string, B>
+     * @return self<string, array>
      * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withKeyAndTranslator($key, Translator $translator): self
@@ -79,7 +76,7 @@ final class HasNotKey implements Validation
             $key,
             /**
              * @param array-key $key
-             * @param B $data
+             * @param array $data
              * @return string[]
              */
             function (string $key, $data) use ($translator): array {

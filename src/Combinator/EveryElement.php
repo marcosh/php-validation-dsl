@@ -6,6 +6,7 @@ namespace Marcosh\PhpValidationDSL\Combinator;
 
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
 use Marcosh\PhpValidationDSL\Validation;
+
 use function is_callable;
 
 /**
@@ -35,7 +36,7 @@ final class EveryElement implements Validation
              * @param array-key $key
              * @param E[][] $resultMessages
              * @param E[] $validationMessages
-             * @return E[]
+             * @return E[][]
              */
             function ($key, array $resultMessages, array $validationMessages): array {
                 $resultMessages[$key] = $validationMessages;
@@ -64,7 +65,7 @@ final class EveryElement implements Validation
      * @param callable(array-key, F[][], F[]): F[][] $errorFormatter
      * @return self<C, F, D>
      */
-    public static function validationWithFormatter(Validation $validation, callable  $errorFormatter): self
+    public static function validationWithFormatter(Validation $validation, callable $errorFormatter): self
     {
         return new self($validation, $errorFormatter);
     }
@@ -90,8 +91,8 @@ final class EveryElement implements Validation
                  * @psalm-param B $next
                  * @return B[]
                  */
-                function (array $result, $next) use ($key) {
-                    return array_merge($result, [$key => $next]);
+                function (array $result, $next) {
+                    return $result;
                 },
                 /**
                  * @param E[][] $resultMessages

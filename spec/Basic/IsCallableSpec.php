@@ -10,8 +10,13 @@ use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
 
 class CallableFoo
 {
-    public static function bar(): void {}
-    public function baz(): void {}
+    public static function bar(): void
+    {
+    }
+
+    public function baz(): void
+    {
+    }
 }
 
 describe('IsCallable', function () {
@@ -22,7 +27,8 @@ describe('IsCallable', function () {
     });
 
     it('returns a valid result if the argument is an anonymous function', function () use ($isCallable) {
-        $function = function () {};
+        $function = function () {
+        };
 
         expect($isCallable->validate($function)->equals(ValidationResult::valid($function)))->toBeTruthy();
     });

@@ -6,8 +6,9 @@ namespace Marcosh\PhpValidationDSLSpec\Basic;
 
 use Marcosh\PhpValidationDSL\Basic\HasKey;
 use Marcosh\PhpValidationDSL\Result\ValidationResult;
-use function json_encode;
 use Marcosh\PhpValidationDSL\Translator\KeyValueTranslator;
+
+use function json_encode;
 
 describe('HasKey', function () {
     $hasKey = HasKey::withKey('key');
