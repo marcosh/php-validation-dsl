@@ -26,8 +26,6 @@
         "ext-json": "*",
         "kahlan/kahlan": "^4.3",
         "squizlabs/php_codesniffer": "^3.4",
-        "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-strict-rules": "^0.12",
         "vimeo/psalm": "^3.2|^4.0|dev-master"
     }
 }
