@@ -1,17 +1,20 @@
 {
   "symbol-whitelist": [
-    "null", "true", "false",
-    "static", "self", "parent",
-    "array", "string", "int", "float", "bool", "iterable", "callable", "void", "object",
-    "curry", "uncurry"
+    "array",
+    "bool",
+    "callable",
+    "false",
+    "null",
+    "self",
+    "static",
+    "string",
+    "true",
+    "uncurry"
   ],
   "php-core-extensions" : [
     "Core",
-    "date",
     "pcre",
-    "Phar",
     "Reflection",
-    "SPL",
     "standard"
   ],
   "scan-files" : []

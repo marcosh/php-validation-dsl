@@ -26,6 +26,7 @@
         "ext-json": "*",
         "kahlan/kahlan": "^5.1",
         "squizlabs/php_codesniffer": "^3.6",
-        "vimeo/psalm": "^4.10|dev-master"
+        "vimeo/psalm": "^4.10|dev-master",
+        "maglnet/composer-require-checker": "^2.0|^3.0"
     }
 }
