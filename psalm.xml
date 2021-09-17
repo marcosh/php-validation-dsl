@@ -16,5 +16,6 @@
 
     <issueHandlers>
         <LessSpecificReturnType errorLevel="info" />
+        <UnusedClosureParam errorLevel="suppress" />
     </issueHandlers>
 </psalm>
